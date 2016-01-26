@@ -7,15 +7,15 @@ import java.util.List;
  */
 public interface ModelDataAccess {
     List<Student> getAllStudents();
-    List<Student> getAllStudentsByCourse(Course course);
+    List<Student> getAllStudentsByCourse(CourseImpl course);
     List<Student> getAllStudentsByDepartment(int departmentLocationId);
     List<Student> getAllStudentsByCountry(int countryLocationId);
     List<Student> getAllStudentsByCity(int cityLocationId);
     List<Student> getAllStudentsByUniversity(int universityLocationId);
-    List<Course> getAllCourses();
+    List<CourseImpl> getAllCourses();
     List<Location> getAllCountries();
     List<Location> getAllCities();
     List<Location> getAllUniversities();
     List<Location> getAllDepartments();
-    List<Grade> getAllStudentCourseGrades(Course course, Student student);
+    List<GradeImpl> getAllStudentCourseGrades(CourseImpl course, Student student);
 }
