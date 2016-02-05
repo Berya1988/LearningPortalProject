@@ -9,10 +9,10 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-    </dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+  </dependency>
   </dependencies>
   <build>
     <finalName>LearningPortalArtefactId</finalName>
@@ -27,4 +27,14 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>propSnap</id>
+      <name>Propellors Snapshots</name>
+      <url>http://127.0.0.1:8080/Oleg/.m2/repository/LearningPortalGroupId/LearningPortalArtefactId/1.0-SNAPSHOT/</url>
+      <layout>legacy</layout>
+    </snapshotRepository>
+  </distributionManagement>
 </project>

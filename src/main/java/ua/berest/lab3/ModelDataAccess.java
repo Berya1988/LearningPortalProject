@@ -7,6 +7,9 @@ import java.util.List;
  */
 public interface ModelDataAccess {
     List<Student> getAllStudents();
+    Boolean addStudent(int studentId, String fio, String group, String mail, String phone, String address);
+    Boolean removeStudentById(int studentId);
+    Boolean updateStudentNameById(int studentId, String fio);
     List<Student> getAllStudentsByCourse(CourseImpl course);
     List<Student> getAllStudentsByDepartment(int departmentLocationId);
     List<Student> getAllStudentsByCountry(int countryLocationId);
