@@ -1,4 +1,4 @@
-package ua.berest.lab3;
+package ua.berest.lab3.model;
 
 /**
  * Created by Oleg on 26.01.2016.

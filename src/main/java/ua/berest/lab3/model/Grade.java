@@ -1,4 +1,4 @@
-package ua.berest.lab3;
+package ua.berest.lab3.model;
 
 import java.util.Date;
 
