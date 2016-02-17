@@ -1,7 +1,7 @@
 package ua.berest.lab3;
 
 import ua.berest.lab3.exception.DataAccessException;
-import ua.berest.lab3.exception.ProblemWithConnectionException;
+import ua.berest.lab3.exception.ConnectionException;
 import ua.berest.lab3.model.*;
 
 import java.sql.*;
@@ -13,13 +13,8 @@ import javax.sql.DataSource;
  * Created by Oleg on 26.01.2016.
  */
 public class OracleDataAccess implements ModelDataAccess {
+    private static final OracleDataAccess instance = new OracleDataAccess();
 
-    private Connection connection;
-    private boolean isConnected = false;
-    private Statement statement;
-    private PreparedStatement preparedStatement;
-
-    private ResultSet result;
     private static DataSource ds;
     private static Context ctx;
     private static Hashtable ht = new Hashtable();
@@ -31,198 +26,151 @@ public class OracleDataAccess implements ModelDataAccess {
             ds = (javax.sql.DataSource) ctx.lookup("JNDI_Name0");
         } catch (NamingException e) {
             try {
-                throw new ProblemWithConnectionException(e, "Problems with JNDI naming");
-            } catch (ProblemWithConnectionException problemWithConnectionException) {
-                problemWithConnectionException.printStackTrace();
+                throw new ConnectionException("Problems with JNDI naming", e);
+            } catch (ConnectionException connectionException) {
+                connectionException.printStackTrace();
             }
         }
     }
 
-    private void connect() throws ProblemWithConnectionException {
+    private OracleDataAccess() {
+    }
+
+    public static OracleDataAccess getInstance() {
+        return instance;
+    }
+
+    private Connection connect() throws ConnectionException {
+        Connection connection;
         try {
             connection = ds.getConnection();
-            if(!connection.isClosed()){
-                isConnected = true;
-            }
         } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Problems with getting connection");
+            throw new ConnectionException("Problems with getting connection", e);
         }
+        return connection;
     }
 
-    private boolean disconnect() throws ProblemWithConnectionException {
+    private void disconnect(Connection connection, ResultSet result, PreparedStatement statement) throws ConnectionException {
         try {
-            ctx.close();
-        } catch (NamingException e) {
-            throw new ProblemWithConnectionException(e, "Can't close context");
-        }
-        try {
-            if(preparedStatement != null)
-                preparedStatement.close();
             if(statement != null)
                 statement.close();
             if(connection != null)
                 connection.close();
             if(result != null)
                 result.close();
-            if(connection.isClosed()){
-                isConnected = false;
+        } catch (SQLException e) {
+            throw new ConnectionException("Can't close statement or connections", e);
+        }
+    }
+
+    public List<Student> getAllStudents(String target) throws ConnectionException, DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Student> lStudent = new ArrayList<Student>();
+        try {
+            statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENT_GROUP = ?");
+            statement.setString(1, target);
+            result = statement.executeQuery();
+            while(result.next()){
+                lStudent.add(parseStudent(result));
             }
-        } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Can't close statement or connections");
-        }
-        return isConnected;
-    }
-  /*  @Override
-    public List<Student> getAllStudents(String tableName) throws ProblemWithConnectionException, DataAccessException {
-        List<Student> lStudent = new ArrayList<Student>();
-        connect();
-        try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM ?");
-            preparedStatement.setString((int)1, tableName);
-            result = preparedStatement.executeQuery();
-            lStudent = display(result, lStudent);
         } catch (Exception e) {
-            throw new DataAccessException(e, "Can't extract necessary data");
+            throw new DataAccessException("Can't extract necessary data", e);
         }
         finally {
-            disconnect();
-        }
-        return lStudent;
-    }
-*/
-    @Override
-    public List<Student> getAllStudents() throws ProblemWithConnectionException, DataAccessException {
-        List<Student> lStudent = new ArrayList<Student>();
-        connect();
-        try {
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM OLEG.STUDENTS");
-            lStudent = display(result, lStudent);
-        } catch (Exception e) {
-            throw new DataAccessException(e, "Can't extract necessary data");
-        }
-        finally {
-            disconnect();
+            disconnect(connection, result, statement);
         }
         return lStudent;
     }
 
-    @Override
-    public void addStudent(int studentId, String fio, String group, String mail, String phone, String address) throws ProblemWithConnectionException {
-        connect();
+    public void addStudent(Student student) throws ConnectionException, DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
         try {
-            statement = connection.createStatement();
-            statement.execute("INSERT INTO OLEG.STUDENTS (STUDENT_ID, STUDENT_FIO, STUDENT_GROUP, MAIL, PHONE_NUMBER, ADDRESS) " +
-                        "VALUES ( " + studentId + ", '" + fio + "', '" + group + "', '" + mail + "', '" + phone + "', '" + address + "')");
+            statement = connection.prepareStatement("INSERT INTO STUDENTS (STUDENT_ID, STUDENT_FIO, STUDENT_GROUP, MAIL, PHONE_NUMBER, ADDRESS) VALUES (?, ?, ?, ?, ?, ?)");
+            statement.setInt(1, student.getStudentId());
+            statement.setString(2, student.getFio());
+            statement.setString(3, student.getGroup());
+            statement.setString(4, student.getMail());
+            statement.setString(5, student.getPhone());
+            statement.setString(6, student.getAddress());
+            statement.execute();
         } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Can't insert new data");
+            throw new DataAccessException("Can't insert new data", e);
         }
         finally {
-            disconnect();
+            disconnect(connection, result, statement);
+        }
+    }
+    public void removeStudent(Student student) throws ConnectionException, DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("DELETE FROM STUDENTS WHERE STUDENT_ID = ?");
+            statement.setInt(1, student.getStudentId());
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't delete data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
         }
     }
 
-    @Override
-    public void removeStudent(Student student) throws ProblemWithConnectionException {
-        connect();
+    public void updateStudent(Student student) throws ConnectionException, DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
         try {
-            statement = connection.createStatement();
-            statement.execute("DELETE FROM OLEG.STUDENTS WHERE STUDENT_ID = " + student.getStudentId());
+            statement = connection.prepareStatement("UPDATE STUDENTS SET STUDENT_FIO = ? WHERE STUDENT_ID = ?");
+            statement.setString(1, student.getFio());
+            statement.setInt(2, student.getStudentId());
+            statement.executeUpdate();
         } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Can't delete data");
+            throw new DataAccessException ("Can't update data", e);
         }
         finally {
-            disconnect();
+            disconnect(connection, result, statement);
         }
     }
 
-    @Override
-    public void updateStudent(Student student) throws ProblemWithConnectionException {
-        connect();
+    public Student getStudentByID(int studentId) throws ConnectionException, DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        Student student = null;
         try {
-            statement = connection.createStatement();
-            int res = statement.executeUpdate("UPDATE OLEG.STUDENTS SET STUDENT_FIO = '" + student.getFio() + "' WHERE STUDENT_ID = " + student.getStudentId());
-        } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Can't update data");
+            statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENT_ID = ?");
+            statement.setInt(1, studentId);
+            result = statement.executeQuery();
+            if(result.next())
+                student = parseStudent(result);
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
         }
         finally {
-            disconnect();
+            disconnect(connection, result, statement);
         }
+        return student;
     }
 
-    public void executeStatement(String sql, String errorMessage) throws ProblemWithConnectionException {
-        connect();
+    public Student parseStudent(ResultSet result) throws DataAccessException {
+        Student student;
         try {
-            statement = connection.createStatement();
-            statement.execute(sql);
-        } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, errorMessage);
-        }
-        finally {
-            disconnect();
-        }
-    }
-
-
-    public List<Student> display(ResultSet result, List list) throws ProblemWithConnectionException {
-        try {
-            while (result.next()) {
                 int id = result.getInt("STUDENT_ID");
                 String lastName = result.getString("STUDENT_FIO");
                 String group = result.getString("STUDENT_GROUP");
                 String mail = result.getString("MAIL");
                 String phone = result.getString("PHONE_NUMBER");
                 String address = result.getString("ADDRESS");
-                list.add(new StudentImpl(id, lastName, group, mail, phone, address));
+                student = new StudentImpl(id, lastName, group, mail, phone, address);
                 System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
-            }
         } catch (SQLException e) {
-            throw new ProblemWithConnectionException(e, "Can't get data from ResultSet");
+            throw new DataAccessException("Can't get data from ResultSet", e);
         }
-        return list;
-    }
-
-    public List<Student> getAllStudentsByCourse(CourseImpl course) {
-        return null;
-    }
-
-    public List<Student> getAllStudentsByDepartment(int departmentLocationId) {
-        return null;
-    }
-
-    public List<Student> getAllStudentsByCountry(int countryLocationId) {
-        return null;
-    }
-
-    public List<Student> getAllStudentsByCity(int cityLocationId) {
-        return null;
-    }
-
-    public List<Student> getAllStudentsByUniversity(int universityLocationId) {
-        return null;
-    }
-
-    public List<CourseImpl> getAllCourses() {
-        return null;
-    }
-
-    public List<Location> getAllCountries() {
-        return null;
-    }
-
-    public List<Location> getAllCities() {
-        return null;
-    }
-
-    public List<Location> getAllUniversities() {
-        return null;
-    }
-
-    public List<Location> getAllDepartments() {
-        return null;
-    }
-
-    public List<GradeImpl> getAllStudentCourseGrades(CourseImpl course, Student student) {
-        return null;
+        return student;
     }
 }

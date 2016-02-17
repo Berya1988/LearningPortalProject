@@ -1,7 +1,7 @@
 package ua.berest.lab3;
 
 import ua.berest.lab3.exception.DataAccessException;
-import ua.berest.lab3.exception.ProblemWithConnectionException;
+import ua.berest.lab3.exception.ConnectionException;
 import ua.berest.lab3.model.Student;
 
 import java.io.IOException;
@@ -32,24 +32,26 @@ public class SimpleServlet extends javax.servlet.http.HttpServlet {
         PrintWriter out = response.getWriter();
         StringBuilder sb = new StringBuilder();
 
+        //Student student;
         List<Student> listOfAllStudents = new ArrayList<Student>();
-
         response.setStatus(200);
-        OracleDataAccess test = new OracleDataAccess();
+        OracleDataAccess test = OracleDataAccess.getInstance();
         try {
             try {
-                //test.updateStudent(new StudentImpl(32, "Ivanov", "sdf", "dsf", "sdf", "sdf"));
-                listOfAllStudents = test.getAllStudents();
+                //student = test.getStudentByID(1);
+                //sb.append("  <li>" + student.getFio() + "</li>");
+                listOfAllStudents = test.getAllStudents("SU-21");
             } catch (DataAccessException e) {
                 e.printStackTrace();
             }
-        } catch (ProblemWithConnectionException e) {
+        } catch (ConnectionException e) {
             e.printStackTrace();
         }
 
         for (Student student:listOfAllStudents) {
             sb.append("  <li>" + student.getFio() + "</li>");
         }
+
 
         try {
             out.println("<html>"
@@ -69,7 +71,7 @@ public class SimpleServlet extends javax.servlet.http.HttpServlet {
                     + "<div \">"
                     + "<table>"
                     + "<tr>"
-                    + " <th>Size of student list: " + listOfAllStudents.size()  + "</th>"
+                    + "  <th>Size of student list: " + listOfAllStudents.size()  + "</th>"
                     + "  <th>EDIT ADD DELETE</th>"
                     + "</tr>"
                     + "    </table>"
