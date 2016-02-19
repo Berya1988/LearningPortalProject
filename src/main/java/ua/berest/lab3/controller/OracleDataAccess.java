@@ -1,7 +1,6 @@
-package ua.berest.lab3;
+package ua.berest.lab3.controller;
 
 import ua.berest.lab3.exception.DataAccessException;
-import ua.berest.lab3.exception.ConnectionException;
 import ua.berest.lab3.model.*;
 
 import java.sql.*;
@@ -18,6 +17,7 @@ public class OracleDataAccess implements ModelDataAccess {
     private static DataSource ds;
     private static Context ctx;
     private static Hashtable ht = new Hashtable();
+
     static {
         ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         ht.put(Context.PROVIDER_URL, "t3://localhost:7001");
@@ -25,11 +25,7 @@ public class OracleDataAccess implements ModelDataAccess {
             ctx = new InitialContext(ht);
             ds = (javax.sql.DataSource) ctx.lookup("JNDI_Name0");
         } catch (NamingException e) {
-            try {
-                throw new ConnectionException("Problems with JNDI naming", e);
-            } catch (ConnectionException connectionException) {
-                connectionException.printStackTrace();
-            }
+            System.err.println (e.getMessage());
         }
     }
 
@@ -40,17 +36,17 @@ public class OracleDataAccess implements ModelDataAccess {
         return instance;
     }
 
-    private Connection connect() throws ConnectionException {
+    private Connection connect() throws DataAccessException {
         Connection connection;
         try {
             connection = ds.getConnection();
         } catch (SQLException e) {
-            throw new ConnectionException("Problems with getting connection", e);
+            throw new DataAccessException("Problems with getting connection", e);
         }
         return connection;
     }
 
-    private void disconnect(Connection connection, ResultSet result, PreparedStatement statement) throws ConnectionException {
+    private void disconnect(Connection connection, ResultSet result, Statement statement) throws DataAccessException {
         try {
             if(statement != null)
                 statement.close();
@@ -59,18 +55,17 @@ public class OracleDataAccess implements ModelDataAccess {
             if(result != null)
                 result.close();
         } catch (SQLException e) {
-            throw new ConnectionException("Can't close statement or connections", e);
+            throw new DataAccessException("Can't close statement or connections or resultset", e);
         }
     }
 
-    public List<Student> getAllStudents(String target) throws ConnectionException, DataAccessException {
+    public List<Student> getAllStudents() throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
         List<Student> lStudent = new ArrayList<Student>();
         try {
-            statement = connection.prepareStatement("SELECT * FROM STUDENTS WHERE STUDENT_GROUP = ?");
-            statement.setString(1, target);
+            statement = connection.prepareStatement("SELECT * FROM STUDENTS");
             result = statement.executeQuery();
             while(result.next()){
                 lStudent.add(parseStudent(result));
@@ -84,7 +79,7 @@ public class OracleDataAccess implements ModelDataAccess {
         return lStudent;
     }
 
-    public void addStudent(Student student) throws ConnectionException, DataAccessException {
+    public void addStudent(Student student) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -104,7 +99,8 @@ public class OracleDataAccess implements ModelDataAccess {
             disconnect(connection, result, statement);
         }
     }
-    public void removeStudent(Student student) throws ConnectionException, DataAccessException {
+
+    public void removeStudent(Student student) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -120,7 +116,7 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
-    public void updateStudent(Student student) throws ConnectionException, DataAccessException {
+    public void updateStudent(Student student) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -137,7 +133,7 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
-    public Student getStudentByID(int studentId) throws ConnectionException, DataAccessException {
+    public Student getStudentByID(int studentId) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;

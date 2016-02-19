@@ -1,7 +1,7 @@
 package ua.berest.lab3;
 
+import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
-import ua.berest.lab3.exception.ConnectionException;
 import ua.berest.lab3.model.Student;
 
 import java.io.IOException;
@@ -37,14 +37,10 @@ public class SimpleServlet extends javax.servlet.http.HttpServlet {
         response.setStatus(200);
         OracleDataAccess test = OracleDataAccess.getInstance();
         try {
-            try {
-                //student = test.getStudentByID(1);
-                //sb.append("  <li>" + student.getFio() + "</li>");
-                listOfAllStudents = test.getAllStudents("SU-21");
-            } catch (DataAccessException e) {
-                e.printStackTrace();
-            }
-        } catch (ConnectionException e) {
+            //student = test.getStudentByID(1);
+            //sb.append("  <li>" + student.getFio() + "</li>");
+            listOfAllStudents = test.getAllStudents();
+        } catch (DataAccessException e) {
             e.printStackTrace();
         }
 
