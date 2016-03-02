@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<processors>
+    <processor>
+        <processorName>ProcessorShowAllStudents</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorShowAllCountries</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorLogOut</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorMainPage</processorName>
+    </processor>
+</processors>

@@ -8,24 +8,11 @@
     <servlet-name>DispatcherServlet</servlet-name>
     <servlet-class>ua.berest.lab3.controller.DispatcherServlet</servlet-class>
   </servlet>
-  <servlet>
-    <servlet-name>SimpleServlet</servlet-name>
-    <servlet-class>ua.berest.lab3.SimpleServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>SecondServlet</servlet-name>
-    <servlet-class>ua.berest.lab3.SecondServlet</servlet-class>
-  </servlet>
   <servlet-mapping>
     <servlet-name>DispatcherServlet</servlet-name>
     <url-pattern>/DispatcherServlet</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SimpleServlet</servlet-name>
-    <url-pattern>/SimpleServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SecondServlet</servlet-name>
-    <url-pattern>/SecondServlet</url-pattern>
-  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>pages/welcome.jsp</welcome-file>
+  </welcome-file-list>
 </web-app>

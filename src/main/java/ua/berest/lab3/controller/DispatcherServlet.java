@@ -1,14 +1,13 @@
 package ua.berest.lab3.controller;
 
-import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
 import org.xml.sax.SAXException;
 import ua.berest.lab3.controller.processors.Processor;
-import ua.berest.lab3.controller.processors.ProcessorShowAllStudents;
 import ua.berest.lab3.exception.DataAccessException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,18 +36,19 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         String action = request.getParameter("action");
         String jspFileName = null;
         List<Processor> listOfAllProcessors = new ArrayList<Processor>();
-        List<String> namesOfAllProcessors = new ArrayList<String>();
+        List<String> namesOfAllProcessors = extractProcessorNamesFromXML();
 
-        // extract list of working processors from the file
-        namesOfAllProcessors = extractProcessorNamesFromXML();
-        for (String name:namesOfAllProcessors) {
-            request.getSession().setAttribute("name", name);
+        request.getSession().setAttribute("namesOfAllProcessors", namesOfAllProcessors);
+        System.out.println("Size of processor name list: " + namesOfAllProcessors.size());
+         for (String name : namesOfAllProcessors) {
+             System.out.println("Name of processor: " + name);
             try {
                 try {
-                    listOfAllProcessors.add((Processor) Class.forName(name).newInstance());
+                    listOfAllProcessors.add((Processor) Class.forName("ua.berest.lab3.controller.processors." + name).newInstance());
                 } catch (InstantiationException e) {
                     System.err.println (e.getMessage());
                 } catch (IllegalAccessException e) {
@@ -56,11 +56,12 @@ public class DispatcherServlet extends HttpServlet {
                 }
             } catch (ClassNotFoundException e) {
                 System.err.println (e.getMessage());
-            }
+
         }
+}
 
         // test application
-        // listOfAllProcessors.add(new ProcessorShowAllStudents());
+        System.out.println("Size of processor list: " + listOfAllProcessors.size());
         for (Processor processor : listOfAllProcessors) {
             if(processor.canProcess(action)){
                 try {
@@ -72,8 +73,15 @@ public class DispatcherServlet extends HttpServlet {
             }
         }
 
-        /*RequestDispatcher rd = request.getRequestDispatcher(jspFileName + ".jsp");*/
-        RequestDispatcher rd = request.getRequestDispatcher("template.jsp");
+        request.getSession().setAttribute("includedJSPName", jspFileName);
+        RequestDispatcher rd;
+        if (action.equals("logOut")){
+            rd = request.getRequestDispatcher("/");
+        }
+        else {
+            rd = request.getRequestDispatcher("pages/template.jsp");
+        }
+
         try {
             rd.forward(request, response);
         } catch (ServletException e) {
@@ -82,7 +90,16 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private List<String> extractProcessorNamesFromXML() {
-        File xmlFile = new File("resources/processors.xml");
+        String fullPath = null;
+        ServletContext servletContext = getServletContext();
+
+        try {
+            fullPath = servletContext.getResource("/WEB-INF/resources/processors.xml").getPath();
+            System.out.println(fullPath);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        File xmlFile = new File(fullPath);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = null;
         try {

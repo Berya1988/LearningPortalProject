@@ -5,7 +5,6 @@ import ua.berest.lab3.exception.DataAccessException;
 import ua.berest.lab3.model.Student;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +15,8 @@ public class ProcessorShowAllStudents extends Processor {
         actionToPerform = "showAllStudents";
     }
     public String process(HttpServletRequest request) throws DataAccessException {
-        List<Student> listOfAllStudents = new ArrayList<Student>();
-        listOfAllStudents = OracleDataAccess.getInstance().getAllStudents();
+        List<Student> listOfAllStudents = OracleDataAccess.getInstance().getAllStudents();
         request.getSession().setAttribute("listOfAllStudents", listOfAllStudents);
-        return "template";
+        return "showAllStudents";
     }
 }

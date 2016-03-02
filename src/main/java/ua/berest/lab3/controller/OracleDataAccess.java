@@ -14,11 +14,11 @@ import javax.sql.DataSource;
 public class OracleDataAccess implements ModelDataAccess {
     private static final OracleDataAccess instance = new OracleDataAccess();
 
-    private static DataSource ds;
-    private static Context ctx;
-    private static Hashtable ht = new Hashtable();
+    private  DataSource ds;
+    private  Context ctx;
+    private  Hashtable ht = new Hashtable();
 
-    static {
+    private OracleDataAccess() {
         ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         ht.put(Context.PROVIDER_URL, "t3://localhost:7001");
         try {
@@ -27,9 +27,6 @@ public class OracleDataAccess implements ModelDataAccess {
         } catch (NamingException e) {
             System.err.println (e.getMessage());
         }
-    }
-
-    private OracleDataAccess() {
     }
 
     public static OracleDataAccess getInstance() {
@@ -168,5 +165,32 @@ public class OracleDataAccess implements ModelDataAccess {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
         return student;
+    }
+
+    public List<Location> getAllCountries() throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Location> lLocations = new ArrayList<Location>();
+        Location location;
+        try {
+            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = 1");
+            result = statement.executeQuery();
+            while(result.next()){
+                int id = result.getInt("LOCATION_ID");
+                String name = result.getString("NAME");
+                int idParent = result.getInt("PARENT_ID");
+                Boolean is_last_level = result.getBoolean("IS_LAST_LEVEL");
+                String description = result.getString("DESCRIPTION");
+                location = new LocationImpl(id, name, description, idParent, is_last_level);
+                lLocations.add(location);
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lLocations;
     }
 }
