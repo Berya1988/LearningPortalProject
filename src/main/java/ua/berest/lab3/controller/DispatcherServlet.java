@@ -25,6 +25,31 @@ import java.util.List;
  * Created by Oleg on 18.02.2016.
  */
 public class DispatcherServlet extends HttpServlet {
+
+    private  List<Processor> listOfAllProcessors = new ArrayList<Processor>();
+    private List<String> namesOfAllProcessors;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        List<String> namesOfAllProcessors = extractProcessorNamesFromXML();
+        System.out.println("Size of processor name list: " + namesOfAllProcessors.size());
+        for (String name : namesOfAllProcessors) {
+            System.out.println("Name of processor: " + name);
+            try {
+                try {
+                    listOfAllProcessors.add((Processor) Class.forName("ua.berest.lab3.controller.processors." + name).newInstance());
+                } catch (InstantiationException e) {
+                    System.err.println (e.getMessage());
+                } catch (IllegalAccessException e) {
+                    System.err.println (e.getMessage());
+                }
+            } catch (ClassNotFoundException e) {
+                System.err.println (e.getMessage());
+            }
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.process(request, response);
@@ -39,33 +64,15 @@ public class DispatcherServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         String jspFileName = null;
-        List<Processor> listOfAllProcessors = new ArrayList<Processor>();
-        List<String> namesOfAllProcessors = extractProcessorNamesFromXML();
 
         request.getSession().setAttribute("namesOfAllProcessors", namesOfAllProcessors);
-        System.out.println("Size of processor name list: " + namesOfAllProcessors.size());
-         for (String name : namesOfAllProcessors) {
-             System.out.println("Name of processor: " + name);
-            try {
-                try {
-                    listOfAllProcessors.add((Processor) Class.forName("ua.berest.lab3.controller.processors." + name).newInstance());
-                } catch (InstantiationException e) {
-                    System.err.println (e.getMessage());
-                } catch (IllegalAccessException e) {
-                    System.err.println (e.getMessage());
-                }
-            } catch (ClassNotFoundException e) {
-                System.err.println (e.getMessage());
-
-        }
-}
 
         // test application
         System.out.println("Size of processor list: " + listOfAllProcessors.size());
         for (Processor processor : listOfAllProcessors) {
             if(processor.canProcess(action)){
                 try {
-                    jspFileName = processor.process(request);
+                    jspFileName = processor.process(request) + ".jsp";
                 } catch (DataAccessException e) {
                     System.err.println (e.getMessage());
                 }

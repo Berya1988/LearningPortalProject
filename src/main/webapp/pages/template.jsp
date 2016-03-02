@@ -1,5 +1,3 @@
-<%@ page import="java.util.List" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -30,47 +28,11 @@
 
             <div class="container">
                 <main class="content">
-
-                    <table border="1" width="100%" cellpadding="5" bgcolor="#ffcc00">
-                        <tr>
-                            <th id="col1" >Студенти: всі</th>
-                            <th id="col2">
-                                <button>NEW</button><span>   </span><button>EDIT</button><span>   </span><button>DELETE</button>
-                            </th>
-                        </tr>
-                    </table>
-
-                    <p>
-                    <form method="post" action="input5.php">
-                        <input type="checkbox" name="option1" value="a1">Іванов Д.<br/>
-                        <input type="checkbox" name="option2" value="a2">Петров Д.<br/>
-                        <input type="checkbox" name="option3" value="a3">Сидоров Д.<br/>
-                        <input type="checkbox" name="option4" value="a4">Ткачов Д.<br/>
-                    </form>
-                    </p>
-
                     <div>
-                        <% List<String> list =  (List<String>)request.getSession().getAttribute("namesOfAllProcessors"); %>
                         <% String includedJSPName = (String)request.getSession().getAttribute("includedJSPName"); %>
-                        <p>Name of processor:</p>
-                        <% if (list != null){ %>
-                        <ul>
-                            <% for (String name:list) { %>
-                            <li><%= name%></li>
-                            <% } %>
-                        </ul>
+                        <% if (includedJSPName != null && !includedJSPName.equals("template.jsp")) { %>
+                            <jsp:include page = "<%= includedJSPName %>" ></jsp:include>
                         <% } %>
-                        <% if (includedJSPName != null){
-                            if(includedJSPName.equals("showAllStudents")) { %>
-                        <p>
-                            <%@include file = "showAllStudents.jsp"%>
-                        </p>
-                        <%  } else if (includedJSPName.equals("showAllCountries")) { %>
-                        <p>
-                            <%@include file = "showAllCountries.jsp"%>
-                        </p>
-                        <% }
-                        }   %>
                     </div>
                 </main>
             </div>
