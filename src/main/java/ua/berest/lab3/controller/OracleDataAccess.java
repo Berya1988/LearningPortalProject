@@ -62,7 +62,7 @@ public class OracleDataAccess implements ModelDataAccess {
         PreparedStatement statement = null;
         List<Student> lStudent = new ArrayList<Student>();
         try {
-            statement = connection.prepareStatement("SELECT * FROM STUDENTS");
+            statement = connection.prepareStatement("SELECT * FROM STUDENTS ORDER BY STUDENT_FIO");
             result = statement.executeQuery();
             while(result.next()){
                 lStudent.add(parseStudent(result));
@@ -81,13 +81,12 @@ public class OracleDataAccess implements ModelDataAccess {
         ResultSet result = null;
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("INSERT INTO STUDENTS (STUDENT_ID, STUDENT_FIO, STUDENT_GROUP, MAIL, PHONE_NUMBER, ADDRESS) VALUES (?, ?, ?, ?, ?, ?)");
-            statement.setInt(1, student.getStudentId());
-            statement.setString(2, student.getFio());
-            statement.setString(3, student.getGroup());
-            statement.setString(4, student.getMail());
-            statement.setString(5, student.getPhone());
-            statement.setString(6, student.getAddress());
+            statement = connection.prepareStatement("INSERT INTO STUDENTS (STUDENT_ID, STUDENT_FIO, STUDENT_GROUP, MAIL, PHONE_NUMBER, ADDRESS) VALUES (NULL, ?, ?, ?, ?, ?)");
+            statement.setString(1, student.getFio());
+            statement.setString(2, student.getGroup());
+            statement.setString(3, student.getMail());
+            statement.setString(4, student.getPhone());
+            statement.setString(5, student.getAddress());
             statement.execute();
         } catch (SQLException e) {
             throw new DataAccessException("Can't insert new data", e);
@@ -153,7 +152,7 @@ public class OracleDataAccess implements ModelDataAccess {
     public Student parseStudent(ResultSet result) throws DataAccessException {
         Student student;
         try {
-                int id = result.getInt("STUDENT_ID");
+                Integer id = result.getInt("STUDENT_ID");
                 String lastName = result.getString("STUDENT_FIO");
                 String group = result.getString("STUDENT_GROUP");
                 String mail = result.getString("MAIL");
@@ -174,7 +173,7 @@ public class OracleDataAccess implements ModelDataAccess {
         List<Location> lLocations = new ArrayList<Location>();
         Location location;
         try {
-            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = 1");
+            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = 0 ORDER BY NAME");
             result = statement.executeQuery();
             while(result.next()){
                 int id = result.getInt("LOCATION_ID");

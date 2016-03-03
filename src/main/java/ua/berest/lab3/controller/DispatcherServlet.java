@@ -81,9 +81,11 @@ public class DispatcherServlet extends HttpServlet {
         }
 
         request.getSession().setAttribute("includedJSPName", jspFileName);
-        RequestDispatcher rd;
+        RequestDispatcher rd = null;
         if (action.equals("logOut")){
             rd = request.getRequestDispatcher("/");
+        } else if(action.equals("addNewStudent")) {
+            response.sendRedirect("DispatcherServlet?action=showAllStudents");
         }
         else {
             rd = request.getRequestDispatcher("pages/template.jsp");

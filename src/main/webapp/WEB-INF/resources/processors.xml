@@ -12,4 +12,10 @@
     <processor>
         <processorName>ProcessorMainPage</processorName>
     </processor>
+    <processor>
+        <processorName>ProcessorShowFormAddNewStudent</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorAddNewStudent</processorName>
+    </processor>
 </processors>

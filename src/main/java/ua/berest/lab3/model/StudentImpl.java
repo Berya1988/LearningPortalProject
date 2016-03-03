@@ -4,14 +4,14 @@ package ua.berest.lab3.model;
  * Created by Oleg on 24.01.2016.
  */
 public class StudentImpl implements Student {
-    private int studentId;
+    private Integer studentId;
     private String fio;
     private String group;
     private String mail;
     private String phone;
     private String address;
 
-    public StudentImpl(int studentId, String fio, String group, String mail, String phone, String address) {
+    public StudentImpl(Integer studentId, String fio, String group, String mail, String phone, String address) {
         this.studentId = studentId;
         this.fio = fio;
         this.group = group;
@@ -20,11 +20,11 @@ public class StudentImpl implements Student {
         this.address = address;
     }
 
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 

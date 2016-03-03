@@ -1,4 +1,3 @@
-
 html {
 	height: 100%;
 }
@@ -123,14 +122,14 @@ ul {
 }
 
 #col1 {
-	width: 70%;
+	width: 60%;
     	background: #fc5;
 	text-align: left;
 	border-style:hidden; 
 }
 
 #col2 {
-	width: 30%;
+	width: 40%;
 	background: #fc5;
 	text-align: right;
 	border-style:hidden;
