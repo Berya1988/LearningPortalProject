@@ -14,14 +14,14 @@
         <div>
             <label for="groupInput" >Група:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="groupName" id="groupInput" placeholder="Введіть групу: СУ-51" />
+                <input type="text" class="form-control" name="groupName"  id="groupInput" placeholder="Введіть групу: СУ-51" />
             </div>
         </div>
 
         <div>
             <label for="mailInput" >Пошта:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="mailName" id="mailInput" placeholder="Введіть e-mail: example@mail.ua" />
+                <input type="text" class="form-control" name="mailName" id="mailInput"  placeholder="Введіть e-mail: example@mail.ua" />
             </div>
         </div>
 
@@ -31,7 +31,6 @@
                 <input type="text" class="form-control" name="phoneName" id="phoneInput" placeholder="Введіть номер мобльного телефону: +38(066)66-66-666" />
             </div>
         </div>
-
 
         <div>
             <label for="addressInput" >Адреса:</label>

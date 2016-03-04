@@ -5,8 +5,6 @@ import ua.berest.lab3.exception.DataAccessException;
 import ua.berest.lab3.model.Student;
 import ua.berest.lab3.model.StudentImpl;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**

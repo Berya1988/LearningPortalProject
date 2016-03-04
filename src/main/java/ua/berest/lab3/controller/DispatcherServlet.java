@@ -84,7 +84,7 @@ public class DispatcherServlet extends HttpServlet {
         RequestDispatcher rd = null;
         if (action.equals("logOut")){
             rd = request.getRequestDispatcher("/");
-        } else if(action.equals("addNewStudent")) {
+        } else if (action.equals("addNewStudent") || action.equals("deleteStudent")|| action.equals("editStudent")) {
             response.sendRedirect("DispatcherServlet?action=showAllStudents");
         }
         else {
@@ -92,7 +92,8 @@ public class DispatcherServlet extends HttpServlet {
         }
 
         try {
-            rd.forward(request, response);
+            if (rd != null)
+                rd.forward(request, response);
         } catch (ServletException e) {
             System.err.println(e.getMessage());
         }

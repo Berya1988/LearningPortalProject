@@ -13,7 +13,7 @@ public interface ModelDataAccess {
     List<Student> getAllStudents() throws DataAccessException;
     List<Location> getAllCountries() throws DataAccessException;
     void addStudent(Student student) throws DataAccessException;
-    void removeStudent(Student student) throws DataAccessException;
+    void removeStudent(int studentId) throws DataAccessException;
     void updateStudent(Student student) throws DataAccessException;
     Student getStudentByID(int studentId) throws DataAccessException ;
 }

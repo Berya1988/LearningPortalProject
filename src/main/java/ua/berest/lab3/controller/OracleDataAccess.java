@@ -96,13 +96,13 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
-    public void removeStudent(Student student) throws DataAccessException {
+    public void removeStudent(int studentId) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement("DELETE FROM STUDENTS WHERE STUDENT_ID = ?");
-            statement.setInt(1, student.getStudentId());
+            statement.setInt(1, studentId);
             statement.execute();
         } catch (SQLException e) {
             throw new DataAccessException("Can't delete data", e);
@@ -117,9 +117,13 @@ public class OracleDataAccess implements ModelDataAccess {
         ResultSet result = null;
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("UPDATE STUDENTS SET STUDENT_FIO = ? WHERE STUDENT_ID = ?");
+            statement = connection.prepareStatement("UPDATE STUDENTS SET STUDENT_FIO = ?, STUDENT_GROUP = ?, MAIL = ?, PHONE_NUMBER = ?, ADDRESS = ? WHERE STUDENT_ID = ?");
             statement.setString(1, student.getFio());
-            statement.setInt(2, student.getStudentId());
+            statement.setString(2, student.getGroup());
+            statement.setString(3, student.getMail());
+            statement.setString(4, student.getPhone());
+            statement.setString(5, student.getAddress());
+            statement.setInt(6, student.getStudentId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException ("Can't update data", e);

@@ -18,4 +18,13 @@
     <processor>
         <processorName>ProcessorAddNewStudent</processorName>
     </processor>
+    <processor>
+        <processorName>ProcessorEditStudent</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorDeleteStudent</processorName>
+    </processor>
+    <processor>
+        <processorName>ProcessorShowFormEditStudent</processorName>
+    </processor>
 </processors>
