@@ -2,6 +2,7 @@ package ua.berest.lab3.controller.processors;
 
 import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
+import ua.berest.lab3.model.ProcessorResult;
 import ua.berest.lab3.model.Student;
 import ua.berest.lab3.model.StudentImpl;
 
@@ -10,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by Oleg on 02.03.2016.
  */
-public class ProcessorAddNewStudent extends Processor {
-    public ProcessorAddNewStudent() {
-        actionToPerform = "addNewStudent";
+public class ProcessorAddStudent extends Processor {
+    public ProcessorAddStudent() {
+        actionToPerform = "addStudent";
     }
-    public String process(HttpServletRequest request) throws DataAccessException {
+    public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
         String lastName = request.getParameter("userName");
         String group = request.getParameter("groupName");
         String mail = request.getParameter("mailName");
@@ -27,6 +28,6 @@ public class ProcessorAddNewStudent extends Processor {
         System.out.println("Phone: " + student.getPhone());
         System.out.println("Address: " + student.getAddress());
         OracleDataAccess.getInstance().addStudent(student);
-        return "showAllStudents";
+        return new ProcessorResult("showAllStudents", "showAllStudents.jsp", false);
     }
 }

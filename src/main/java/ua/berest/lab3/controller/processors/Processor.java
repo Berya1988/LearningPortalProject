@@ -1,6 +1,7 @@
 package ua.berest.lab3.controller.processors;
 
 import ua.berest.lab3.exception.DataAccessException;
+import ua.berest.lab3.model.ProcessorResult;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,5 +13,5 @@ public abstract class Processor {
     public boolean canProcess(String action) {
         return action.equals(actionToPerform);
     }
-    public abstract String process(HttpServletRequest request) throws DataAccessException;
+    public abstract ProcessorResult process(HttpServletRequest request) throws DataAccessException;
 }

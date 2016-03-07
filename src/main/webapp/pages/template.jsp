@@ -30,7 +30,7 @@
                 <main class="content">
                     <div>
                         <% String includedJSPName = (String)request.getSession().getAttribute("includedJSPName"); %>
-                        <% if (includedJSPName != null && !includedJSPName.equals("template.jsp")) { %>
+                        <% if (includedJSPName != null) { %>
                             <jsp:include page = "<%= includedJSPName %>" ></jsp:include>
                         <% } %>
                     </div>

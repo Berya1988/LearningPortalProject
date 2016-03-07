@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by Oleg on 02.03.2016.
  */
-public class ProcessorLogOut extends Processor {
-    public ProcessorLogOut() {
-        actionToPerform = "logOut";
+public class ProcessorShowFormAddStudent extends Processor {
+    public ProcessorShowFormAddStudent() {
+        actionToPerform = "showFormAddStudent";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-        request.getSession().invalidate();
-        return new ProcessorResult("/", null, true);
+        request.getSession().setAttribute("student", null);
+        return new ProcessorResult("pages/template.jsp", "showFormAddEditStudent.jsp", true);
     }
 }

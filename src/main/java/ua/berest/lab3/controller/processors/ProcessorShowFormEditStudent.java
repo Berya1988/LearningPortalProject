@@ -1,6 +1,9 @@
 package ua.berest.lab3.controller.processors;
 
+import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
+import ua.berest.lab3.model.ProcessorResult;
+import ua.berest.lab3.model.Student;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,20 +14,11 @@ public class ProcessorShowFormEditStudent extends Processor {
     public ProcessorShowFormEditStudent() {
         actionToPerform = "showFormEditStudent";
     }
-    public String process(HttpServletRequest request) throws DataAccessException {
+    public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
 
         String[] students = request.getParameterValues("students");
-        System.out.println( "Edited student: with index" + students[0]);
-        /*if (students != null) {
-            for (int i = 0; i < students.length; i++)
-            {
-                System.out.println (students[i]);
-            }
-        }
-        else
-            System.out.println ("none");*/
-
-        request.getSession().setAttribute("index", students[0]);
-        return "showFormEditStudent";
+        Student student = OracleDataAccess.getInstance().getStudentByID(Integer.parseInt(students[0]));
+        request.getSession().setAttribute("student", student);
+        return new ProcessorResult("pages/template.jsp", "showFormAddEditStudent.jsp", true);
     }
 }

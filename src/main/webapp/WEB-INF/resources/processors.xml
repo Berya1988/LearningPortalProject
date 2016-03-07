@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <processors>
     <processor>
-        <processorName>ProcessorShowAllStudents</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowAllStudents</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorShowAllCountries</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowAllCountries</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorLogOut</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorLogOut</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorMainPage</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorMainPage</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorShowFormAddNewStudent</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormAddStudent</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorAddNewStudent</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorAddStudent</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorEditStudent</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorEditStudent</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorDeleteStudent</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorDeleteStudent</processorName>
     </processor>
     <processor>
-        <processorName>ProcessorShowFormEditStudent</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormEditStudent</processorName>
     </processor>
 </processors>
