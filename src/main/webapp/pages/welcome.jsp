@@ -7,7 +7,15 @@
         <title>Онлайн портал::Вхід</title>
         <link href="css/welcome.css" rel="stylesheet" type="text/css">
     </head>
-
+    <script>
+        function validateForm() {
+            if(document.username.username.value == "") {
+                alert("User Name should not be blank..");
+                document.username.username.focus();
+                return false;
+            }
+        }
+    </script>
     <body>
     <%if (request.getParameter("action")!=null && request.getParameter("action").equals("logOut")) {
         request.getSession(true);
@@ -26,7 +34,7 @@
 
             <div class="login_div">
                 <p class="title">Для користуванням порталом Вам необхідно ввести свої дані:</p>
-                <form class="login_form" name="username" action="DispatcherServlet?action=mainPage" method="POST">
+                <form class="login_form" name="username" action="DispatcherServlet?action=mainPage" method="POST" onSubmit="return validateForm()">
                     Ім'я: <input type="text" name="username" value="" size="20" />
                     <input type="submit" value="Ввійти" />
                 </form>

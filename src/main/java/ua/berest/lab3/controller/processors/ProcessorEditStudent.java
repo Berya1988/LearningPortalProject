@@ -25,6 +25,6 @@ public class ProcessorEditStudent extends Processor {
         Student student = new StudentImpl(id, lastName, group, mail, phone, address);
         System.out.println("FIO: " + student.getFio());
         OracleDataAccess.getInstance().updateStudent(student);
-        return new ProcessorResult("showAllStudents", "showAllStudents.jsp", false);
+        return new ProcessorResult("?action=showAllStudents", "showAllStudents.jsp", false);
     }
 }

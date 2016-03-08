@@ -28,6 +28,6 @@ public class ProcessorAddStudent extends Processor {
         System.out.println("Phone: " + student.getPhone());
         System.out.println("Address: " + student.getAddress());
         OracleDataAccess.getInstance().addStudent(student);
-        return new ProcessorResult("showAllStudents", "showAllStudents.jsp", false);
+        return new ProcessorResult("?action=showAllStudents", "showAllStudents.jsp", false);
     }
 }

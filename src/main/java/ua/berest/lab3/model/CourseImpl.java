@@ -11,7 +11,7 @@ public class CourseImpl implements Course {
     private String teacher;
     private int locationId;
 
-    public CourseImpl(int courseId, String name, String description, String teacher, int locationId) {
+    public CourseImpl(int courseId, int locationId, String name, String description, String teacher) {
         this.courseId = courseId;
         this.name = name;
         this.description = description;

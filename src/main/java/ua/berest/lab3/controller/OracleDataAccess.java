@@ -13,7 +13,6 @@ import javax.sql.DataSource;
  */
 public class OracleDataAccess implements ModelDataAccess {
     private static final OracleDataAccess instance = new OracleDataAccess();
-
     private  DataSource ds;
     private  Context ctx;
     private  Hashtable ht = new Hashtable();
@@ -133,7 +132,7 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
-    public Student getStudentByID(int studentId) throws DataAccessException {
+    public Student getStudentById(int studentId) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -163,7 +162,7 @@ public class OracleDataAccess implements ModelDataAccess {
                 String phone = result.getString("PHONE_NUMBER");
                 String address = result.getString("ADDRESS");
                 student = new StudentImpl(id, lastName, group, mail, phone, address);
-                System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
+                //System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
         } catch (SQLException e) {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
@@ -195,5 +194,33 @@ public class OracleDataAccess implements ModelDataAccess {
             disconnect(connection, result, statement);
         }
         return lLocations;
+    }
+
+    public List<Course> getCoursesByStudentId(int studentId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Course> lCourses = new ArrayList<Course>();
+        Course course;
+        System.out.println("In oracle.");
+        try {
+            statement = connection.prepareStatement("SELECT STUDENTS.STUDENT_FIO, COURSES.NAME FROM STUDENTS, COURSES, ENROLLMENT WHERE COURSES.COURSE_ID = ENROLLMENT.COURSE_ID AND STUDENTS.STUDENT_ID = ENROLLMENT.STUDENT_ID AND STUDENTS.STUDENT_ID = ?");
+            statement.setInt(1, studentId);
+            System.out.println("In oracle.");
+            result = statement.executeQuery();
+            while(result.next()){
+                String name = result.getString("NAME");
+                System.out.println("Course name: " + name);
+
+                course = new CourseImpl(1, 1, name, null, null);
+                lCourses.add(course);
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lCourses;
     }
 }

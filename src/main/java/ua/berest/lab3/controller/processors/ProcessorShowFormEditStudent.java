@@ -15,9 +15,8 @@ public class ProcessorShowFormEditStudent extends Processor {
         actionToPerform = "showFormEditStudent";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-
         String[] students = request.getParameterValues("students");
-        Student student = OracleDataAccess.getInstance().getStudentByID(Integer.parseInt(students[0]));
+        Student student = OracleDataAccess.getInstance().getStudentById(Integer.parseInt(students[0]));
         request.getSession().setAttribute("student", student);
         return new ProcessorResult("pages/template.jsp", "showFormAddEditStudent.jsp", true);
     }

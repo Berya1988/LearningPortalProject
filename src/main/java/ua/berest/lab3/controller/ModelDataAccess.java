@@ -1,6 +1,7 @@
 package ua.berest.lab3.controller;
 
 import ua.berest.lab3.exception.DataAccessException;
+import ua.berest.lab3.model.Course;
 import ua.berest.lab3.model.Location;
 import ua.berest.lab3.model.Student;
 
@@ -15,5 +16,6 @@ public interface ModelDataAccess {
     void addStudent(Student student) throws DataAccessException;
     void removeStudent(int studentId) throws DataAccessException;
     void updateStudent(Student student) throws DataAccessException;
-    Student getStudentByID(int studentId) throws DataAccessException ;
+    Student getStudentById(int studentId) throws DataAccessException ;
+    List<Course> getCoursesByStudentId(int studentId) throws DataAccessException ;
 }

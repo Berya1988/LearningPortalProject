@@ -1,0 +1,28 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="ua.berest.lab3.model.Course" %>
+<%@ page import="ua.berest.lab3.model.Student" %>
+
+<% Student student = (Student) request.getSession().getAttribute("student"); %>
+
+<form method="POST">
+    <table border="1" width="100%" cellpadding="5" bgcolor="#ffcc00">
+        <tr>
+            <th id="col1" ><a href="DispatcherServlet?action=showAllStudents">Студенти</a> :  <%= student.getFio()%></th>
+            <th id="col2">
+                <div style="float:right">
+                    <button type="submit" formaction="DispatcherServlet?action=showFormAddStudent">NEW</button>
+                    <button type="submit" formaction="DispatcherServlet?action=showFormEditStudent">EDIT</button>
+                    <button type="submit" formaction="DispatcherServlet?action=deleteStudent">DELETE</button>
+                </div>
+            </th>
+        </tr>
+    </table>
+
+    <% List<Course> listOfStudentCourses = (List<Course>) request.getSession().getAttribute("listOfStudentCourses"); %>
+    <p>
+            <% for (int i = 0; i < listOfStudentCourses.size(); i++) { %>
+             <input type="checkbox" name ="courses"  value="<%= listOfStudentCourses.get(i).getCourseId() %>"><a href=""><%= listOfStudentCourses.get(i).getName()%></a><br/>
+            <% } %>
+    </p>
+</form>

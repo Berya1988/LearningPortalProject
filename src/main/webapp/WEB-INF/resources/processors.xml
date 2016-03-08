@@ -27,4 +27,7 @@
     <processor>
         <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormEditStudent</processorName>
     </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowStudentCourses</processorName>
+    </processor>
 </processors>

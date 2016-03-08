@@ -1,5 +1,6 @@
 package ua.berest.lab3.controller;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 import org.xml.sax.SAXException;
@@ -18,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,19 +27,20 @@ import java.util.List;
  */
 public class DispatcherServlet extends HttpServlet {
 
+    static final Logger logger = Logger.getLogger(DispatcherServlet.class);
     private  List<Processor> listOfAllProcessors = new ArrayList<Processor>();
     private List<String> namesOfAllProcessors;
+    static {
+        logger.info("Your session begin at: " + new Date());
+    }
 
     @Override
     public void init() throws ServletException {
-        super.init();
         try {
             namesOfAllProcessors = extractProcessorNamesFromXMLFile("/WEB-INF/resources/processors.xml");
+            logger.info(namesOfAllProcessors.size() + " processors were initialized.");
         } catch (IOException e) {
-            throw new ServletException(e);
-        } catch (ParserConfigurationException e) {
-            throw new ServletException(e);
-        } catch (SAXException e) {
+            logger.error("Threw a IOException in DispatcherServlet class::" + e.getMessage());
             throw new ServletException(e);
         }
 
@@ -45,10 +48,13 @@ public class DispatcherServlet extends HttpServlet {
             try {
                 listOfAllProcessors.add((Processor) Class.forName(name).newInstance());
             } catch (InstantiationException e) {
+                logger.error("Threw a InstantiationException in DispatcherServlet class::" + e.getMessage());
                 throw new ServletException(e);
             } catch (IllegalAccessException e) {
+                logger.error("Threw a IllegalAccessException in DispatcherServlet class::" + e.getMessage());
                 throw new ServletException(e);
             } catch (ClassNotFoundException e) {
+                logger.error("Threw a ClassNotFoundException in DispatcherServlet class::" + e.getMessage());
                 throw new ServletException(e);
             }
         }
@@ -66,6 +72,7 @@ public class DispatcherServlet extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        logger.info("Current value of action parameter: " + request.getParameter("action"));
         for (Processor processor : listOfAllProcessors) {
             try {
                 if(processor.canProcess(request.getParameter("action"))){
@@ -78,42 +85,51 @@ public class DispatcherServlet extends HttpServlet {
                             RequestDispatcher rd = request.getRequestDispatcher(result.getUrl());
                             rd.forward(request, response);
                         } catch (ServletException e) {
-                            e.printStackTrace();
+                            logger.error("Threw a ServletException in DispatcherServlet class::" + e.getMessage());
                         }
                     }
                     else {
-                        response.sendRedirect("DispatcherServlet?action=" + result.getUrl());
+                        response.sendRedirect("DispatcherServlet" + result.getUrl());
                     }
                     break;
                 }
             } catch (DataAccessException e) {
-                System.err.println (e.getMessage());
+                logger.error("Threw a DataAccessException in DispatcherServlet class::" + e.getMessage());
             }
         }
     }
 
-    private List<String> extractProcessorNamesFromXMLFile(String path) throws IOException, ParserConfigurationException, SAXException {
+    private List<String> extractProcessorNamesFromXMLFile(String path) throws IOException {
 
         String fullPath = getServletContext().getResource(path).getPath();
         List<String> localNamesOfAllProcessors = new ArrayList<String>();
 
         File xmlFile = new File(fullPath);
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        DocumentBuilder docBuilder = null;
+        try {
+            docBuilder = docFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            logger.error("Threw a ParserConfigurationException in DispatcherServlet class::" + e.getMessage());
+            throw new IOException(e);
+        }
 
-        Document document = docBuilder.parse(xmlFile);
-        document.getDocumentElement().normalize();
-
-        String className;
-
-        NodeList list = document.getElementsByTagName("processor");
-        for (int i = 0; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            if(node instanceof Element) {
-                Element element = (Element)list.item(i);
-                className = element.getElementsByTagName("processorName").item(0).getTextContent();
-                localNamesOfAllProcessors.add(className);
+        try {
+            Document document = docBuilder.parse(xmlFile);
+            document.getDocumentElement().normalize();
+            NodeList list = document.getElementsByTagName("processor");
+            String className;
+            for (int i = 0; i < list.getLength(); i++) {
+                Node node = list.item(i);
+                if(node instanceof Element) {
+                    Element element = (Element)list.item(i);
+                    className = element.getElementsByTagName("processorName").item(0).getTextContent();
+                    localNamesOfAllProcessors.add(className);
+                }
             }
+        } catch (SAXException e) {
+            logger.error("Threw a SAXException in DispatcherServlet class::" + e.getMessage());
+            throw new IOException(e);
         }
         return localNamesOfAllProcessors;
     }
