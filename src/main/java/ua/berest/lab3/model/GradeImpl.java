@@ -12,7 +12,7 @@ public class GradeImpl implements Grade {
     private float credits;
     private Date date;
 
-    public GradeImpl(int gradeId, int courseId, int studentId, float credits, Date date) {
+    public GradeImpl(int gradeId, int courseId, int studentId, Date date, float credits) {
         this.gradeId = gradeId;
         this.courseId = courseId;
         this.studentId = studentId;

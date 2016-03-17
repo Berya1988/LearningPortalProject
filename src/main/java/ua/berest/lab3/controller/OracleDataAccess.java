@@ -4,6 +4,7 @@ import ua.berest.lab3.exception.DataAccessException;
 import ua.berest.lab3.model.*;
 
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 import javax.naming.*;
 import javax.sql.DataSource;
@@ -152,48 +153,66 @@ public class OracleDataAccess implements ModelDataAccess {
         return student;
     }
 
+    public Location parseLocation(ResultSet result) throws DataAccessException {
+        Location location;
+        try {
+            Integer id = result.getInt("LOCATION_ID");
+            String name = result.getString("NAME");
+            int parent_id = result.getInt("PARENT_ID");
+            boolean is_last_level = result.getBoolean("IS_LAST_LEVEL");
+            String description = result.getString("DESCRIPTION");
+            location = new LocationImpl(id, name, parent_id, is_last_level, description);
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't get data from ResultSet", e);
+        }
+        return location;
+    }
+
+    public Course parseCourse(ResultSet result) throws DataAccessException {
+        Course course;
+        try {
+            Integer id = result.getInt("COURSE_ID");
+            Integer location_id = result.getInt("LOCATION_ID");
+            String name = result.getString("NAME");
+            String description = result.getString("DESCRIPTION");
+            String teacher = result.getString("TEACHER");
+            course = new CourseImpl(id, location_id, name, description, teacher);
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't get data from ResultSet", e);
+        }
+        return course;
+    }
+
+    public Grade parseGrade(ResultSet result) throws DataAccessException {
+        Grade grade;
+        try {
+            Integer id = result.getInt("GRADE_ID");
+            Integer student_id = result.getInt("STUDENT_ID");
+            Integer course_id = result.getInt("COURSE_ID");
+            Date date = result.getDate("DATE_OF_EVALUATION");
+            float credits = result.getFloat("CREDITS");
+            grade = new GradeImpl(id, student_id, course_id, date, credits);
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't get data from ResultSet", e);
+        }
+        return grade;
+    }
+
     public Student parseStudent(ResultSet result) throws DataAccessException {
         Student student;
         try {
-                Integer id = result.getInt("STUDENT_ID");
-                String lastName = result.getString("STUDENT_FIO");
-                String group = result.getString("STUDENT_GROUP");
-                String mail = result.getString("MAIL");
-                String phone = result.getString("PHONE_NUMBER");
-                String address = result.getString("ADDRESS");
-                student = new StudentImpl(id, lastName, group, mail, phone, address);
-                //System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
+            Integer id = result.getInt("STUDENT_ID");
+            String lastName = result.getString("STUDENT_FIO");
+            String group = result.getString("STUDENT_GROUP");
+            String mail = result.getString("MAIL");
+            String phone = result.getString("PHONE_NUMBER");
+            String address = result.getString("ADDRESS");
+            student = new StudentImpl(id, lastName, group, mail, phone, address);
+            //System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
         } catch (SQLException e) {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
         return student;
-    }
-
-    public List<Location> getAllCountries() throws DataAccessException {
-        Connection connection = connect();
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        List<Location> lLocations = new ArrayList<Location>();
-        Location location;
-        try {
-            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = 0 ORDER BY NAME");
-            result = statement.executeQuery();
-            while(result.next()){
-                int id = result.getInt("LOCATION_ID");
-                String name = result.getString("NAME");
-                int idParent = result.getInt("PARENT_ID");
-                Boolean is_last_level = result.getBoolean("IS_LAST_LEVEL");
-                String description = result.getString("DESCRIPTION");
-                location = new LocationImpl(id, name, description, idParent, is_last_level);
-                lLocations.add(location);
-            }
-        } catch (Exception e) {
-            throw new DataAccessException("Can't extract necessary data", e);
-        }
-        finally {
-            disconnect(connection, result, statement);
-        }
-        return lLocations;
     }
 
     public List<Course> getCoursesByStudentId(int studentId) throws DataAccessException {
@@ -202,16 +221,12 @@ public class OracleDataAccess implements ModelDataAccess {
         PreparedStatement statement = null;
         List<Course> lCourses = new ArrayList<Course>();
         Course course;
-        System.out.println("In oracle.");
         try {
             statement = connection.prepareStatement("SELECT STUDENTS.STUDENT_FIO, COURSES.NAME FROM STUDENTS, COURSES, ENROLLMENT WHERE COURSES.COURSE_ID = ENROLLMENT.COURSE_ID AND STUDENTS.STUDENT_ID = ENROLLMENT.STUDENT_ID AND STUDENTS.STUDENT_ID = ?");
             statement.setInt(1, studentId);
-            System.out.println("In oracle.");
             result = statement.executeQuery();
             while(result.next()){
                 String name = result.getString("NAME");
-                System.out.println("Course name: " + name);
-
                 course = new CourseImpl(1, 1, name, null, null);
                 lCourses.add(course);
             }
@@ -222,5 +237,49 @@ public class OracleDataAccess implements ModelDataAccess {
             disconnect(connection, result, statement);
         }
         return lCourses;
+    }
+
+    public List<Location> getAllLocationsByParentId(int locationId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Location> lLocations = new ArrayList<Location>();
+        try {
+            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = ? ORDER BY NAME");
+            statement.setInt(1, locationId);
+            result = statement.executeQuery();
+            while(result.next()){
+                lLocations.add(parseLocation(result));
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lLocations;
+    }
+
+    public Map<Integer,String> getLocationHierarchy(int locationId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        Map<Integer,String> lMap = new HashMap<Integer, String>();
+        try {
+            statement = connection.prepareStatement("SELECT LOCATION_ID, NAME FROM LOCATIONS START WITH LOCATION_ID = ? CONNECT BY LOCATION_ID = PRIOR PARENT_ID");
+            statement.setInt(1, locationId);
+            result = statement.executeQuery();
+            while(result.next()){
+                int id = result.getInt("LOCATION_ID");
+                String name = result.getString("NAME");
+                lMap.put(id, name);
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lMap;
     }
 }

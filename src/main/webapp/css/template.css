@@ -18,12 +18,12 @@ body {
 .header {
 	height: 150px;
 	background: #8470FF;
-    	text-align: center
+	text-align: center
 
 }
 
 h1 {
-    	text-align: center;
+	text-align: center;
 
 }
 
@@ -49,7 +49,7 @@ ul {
 	margin-left: -100%;
 	position: relative;
 	background: #fc5;
-    	padding-left: 50px;
+	padding-left: 50px;
 	margin-top: 2%;
 	height: 300px;
 }
@@ -59,26 +59,26 @@ ul {
 }
 
 .logo {
-    	text-align: left;
-    	padding: 10px;
-    	float:left;
-    	width:130px;
-   	height: 130px;
+	text-align: left;
+	padding: 10px;
+	float:left;
+	width:130px;
+	height: 130px;
 }
 
 .descr {
-    	float: left;
-    	width: 64%;
-    	text-align: left;
-    	padding-top: 50px;
+	float: left;
+	width: 64%;
+	text-align: left;
+	padding-top: 50px;
 	color: #d9eef7;
 }
 
 .welcome {
-    	text-align: right;
-    	width: 200px;
-    	font-weight: normal;
-    	float:left;
+	text-align: right;
+	width: 200px;
+	font-weight: normal;
+	float:left;
 	font-size: 14px;
 	padding-top: 1%;
 }
@@ -122,14 +122,14 @@ ul {
 }
 
 #col1 {
-	width: 60%;
-    	background: #fc5;
+	width: 80%;
+	background: #fc5;
 	text-align: left;
-	border-style:hidden; 
+	border-style:hidden;
 }
 
 #col2 {
-	width: 40%;
+	width: 20%;
 	background: #fc5;
 	text-align: right;
 	border-style:hidden;
@@ -137,7 +137,7 @@ ul {
 
 #col1, #col2 {
 	vertical-align: top;
-	padding: 5px; 
+	padding: 5px;
 }
 
 .footer{

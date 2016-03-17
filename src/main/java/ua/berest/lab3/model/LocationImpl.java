@@ -10,7 +10,7 @@ public class LocationImpl implements Location {
     private int parentId;
     private Boolean isCourse;
 
-    public LocationImpl(int locationId, String name, String description, int parentId, Boolean isCourse) {
+    public LocationImpl(int locationId, String name, int parentId, Boolean isCourse, String description) {
         this.locationId = locationId;
         this.name = name;
         this.description = description;

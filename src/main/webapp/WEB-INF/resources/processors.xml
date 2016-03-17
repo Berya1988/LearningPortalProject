@@ -4,7 +4,7 @@
         <processorName>ua.berest.lab3.controller.processors.ProcessorShowAllStudents</processorName>
     </processor>
     <processor>
-        <processorName>ua.berest.lab3.controller.processors.ProcessorShowAllCountries</processorName>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowLocationsByParentId</processorName>
     </processor>
     <processor>
         <processorName>ua.berest.lab3.controller.processors.ProcessorLogOut</processorName>
