@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="ua.berest.lab3.model.Student" %>
 <%@ page import="java.util.List" %>
+<%@ page errorPage="errorPage.jsp"%>
+
 <script>
     function validateForm2() {
-        var i;
-        for (i = 0; i < document.studentForm.students.length; i++) {
+        for (var i = 0; i < document.studentForm.students.length; i++) {
             if (document.studentForm.students[i].checked) {
                 return true;
             }

@@ -2,6 +2,7 @@ package ua.berest.lab3.controller.processors;
 
 import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
+import ua.berest.lab3.model.Course;
 import ua.berest.lab3.model.Location;
 import ua.berest.lab3.model.ProcessorResult;
 
@@ -18,10 +19,19 @@ public class ProcessorShowLocationsByParentId extends Processor {
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
         int parentId = Integer.parseInt(request.getParameter("parentId"));
-        List<Location> listOfAllLocations = OracleDataAccess.getInstance().getAllLocationsByParentId(parentId);
         Map<Integer, String> mapOfAllLocations = OracleDataAccess.getInstance().getLocationHierarchy(parentId);
-        request.getSession().setAttribute("mapOfAllLocations", mapOfAllLocations);
-        request.getSession().setAttribute("listOfAllLocations", listOfAllLocations);
-        return new ProcessorResult("pages/template.jsp", "showAllLocations.jsp", true);
+        request.getSession().setAttribute("mapOfAllLocationsById", mapOfAllLocations);
+        Location location = OracleDataAccess.getInstance().getLocationById(parentId);
+        if(location != null && location.getCourse().equals("true")){
+            List<Course> listOfCourses = OracleDataAccess.getInstance().getCoursesByLocationId(parentId);
+            request.getSession().setAttribute("listOfCourses", listOfCourses);
+            request.getSession().setAttribute("parentLocation", location);
+            return new ProcessorResult("pages/template.jsp", "showCourses.jsp", true);
+        }
+        else {
+            List<Location> listOfAllLocations = OracleDataAccess.getInstance().getAllLocationsByParentId(parentId);
+            request.getSession().setAttribute("listOfAllLocations", listOfAllLocations);
+            return new ProcessorResult("pages/template.jsp", "showAllLocations.jsp", true);
+        }
     }
 }

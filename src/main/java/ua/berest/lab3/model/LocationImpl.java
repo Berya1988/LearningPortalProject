@@ -8,9 +8,9 @@ public class LocationImpl implements Location {
     private String name;
     private String description;
     private int parentId;
-    private Boolean isCourse;
+    private String isCourse;
 
-    public LocationImpl(int locationId, String name, int parentId, Boolean isCourse, String description) {
+    public LocationImpl(int locationId, String name, int parentId, String isCourse, String description) {
         this.locationId = locationId;
         this.name = name;
         this.description = description;
@@ -50,11 +50,11 @@ public class LocationImpl implements Location {
         this.parentId = parentId;
     }
 
-    public Boolean getCourse() {
+    public String getCourse() {
         return isCourse;
     }
 
-    public void setCourse(Boolean course) {
+    public void setCourse(String course) {
         isCourse = course;
     }
 

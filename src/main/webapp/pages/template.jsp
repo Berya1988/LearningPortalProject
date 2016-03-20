@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page errorPage="errorPage.jsp"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +17,7 @@
                 <img src="images/portal.jpg" alt="Логотип"  width="130" height="130" name="logo" />
             </div>
             <div class="descr">
-                <h1>Всесвітній учбовий онлайн-портал</h1>
+                <h1>Всесвітній навчальний онлайн-портал</h1>
             </div>
 
             <div class="welcome">

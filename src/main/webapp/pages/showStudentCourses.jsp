@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="ua.berest.lab3.model.Course" %>
 <%@ page import="ua.berest.lab3.model.Student" %>
+<%@ page errorPage="errorPage.jsp"%>
 
 <% Student student = (Student) request.getSession().getAttribute("student"); %>
 
@@ -22,7 +23,7 @@
     <% List<Course> listOfStudentCourses = (List<Course>) request.getSession().getAttribute("listOfStudentCourses"); %>
     <p>
             <% for (int i = 0; i < listOfStudentCourses.size(); i++) { %>
-             <input type="checkbox" name ="courses"  value="<%= listOfStudentCourses.get(i).getCourseId() %>"><a href=""><%= listOfStudentCourses.get(i).getName()%></a><br/>
+                <input type="checkbox" name ="courses"  value="<%= listOfStudentCourses.get(i).getCourseId() %>"><a href="<%= "DispatcherServlet?action=showAllGrades&courseId=" + listOfStudentCourses.get(i).getCourseId() + "&studentId=" + student.getStudentId()%>"><%= listOfStudentCourses.get(i).getName()%></a><br/>
             <% } %>
     </p>
 </form>

@@ -1,12 +1,14 @@
 <%@ page import="ua.berest.lab3.model.Student" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page errorPage="errorPage.jsp"%>
+
 <link href="css/form.css" rel="stylesheet" type="text/css">
 
 <% Student student = (Student) request.getSession().getAttribute("student"); %>
 
 <form id="myForm" method="POST" action="<%= student!=null?"DispatcherServlet?action=editStudent":"DispatcherServlet?action=addStudent"%>">
     <fieldset>
-        <legend><b>СТУДЕНТ:РЕДАГУВАТИ</b></legend>
+        <legend><b><%= student!=null?"СТУДЕНТ:РЕДАГУВАТИ":"СТУДЕНТ:СТВОРИТИ"%></b></legend>
         <input type="hidden" name="idName" value="<%= student!=null?student.getStudentId():""%>" />
         <div>
             <label for="userNameInput" >Прізвище та ім'я по-батькові:</label>
