@@ -4,9 +4,21 @@
 
 <link href="css/form.css" rel="stylesheet" type="text/css">
 
+<script type="text/javascript">
+    function validateForm()
+    {
+        if (document.myForm.userName.value == "")
+        {
+            alert("Name is necessary");
+            return false;
+        }
+        return true;
+    }
+</script>
+
 <% Student student = (Student) request.getSession().getAttribute("student"); %>
 
-<form id="myForm" method="POST" action="<%= student!=null?"DispatcherServlet?action=editStudent":"DispatcherServlet?action=addStudent"%>">
+<form name="myForm" method="POST" action="<%= student!=null?"DispatcherServlet?action=editStudent":"DispatcherServlet?action=addStudent"%>">
     <fieldset>
         <legend><b><%= student!=null?"СТУДЕНТ:РЕДАГУВАТИ":"СТУДЕНТ:СТВОРИТИ"%></b></legend>
         <input type="hidden" name="idName" value="<%= student!=null?student.getStudentId():""%>" />
@@ -46,7 +58,7 @@
         </div>
         <div>
             <button class="btn btn-default" type="submit" formaction="DispatcherServlet?action=showAllStudents">Відміна</button>
-            <button class="btn btn-primary" type="submit">Підтвердити</button>
+            <button class="btn btn-primary" type="submit" onsubmit="return validateForm()">Підтвердити</button>
         </div>
     </fieldset>
 </form>

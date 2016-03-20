@@ -1,23 +1,25 @@
 package ua.berest.lab3.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Created by Oleg on 24.01.2016.
  */
 public class GradeImpl implements Grade {
     private int gradeId;
-    private int courseId;
     private int studentId;
-    private float credits;
+    private int courseId;
     private Date date;
+    private int credits;
+    private String description;
 
-    public GradeImpl(int gradeId, int courseId, int studentId, Date date, float credits) {
+    public GradeImpl(int gradeId, int studentId, int courseId, Date date, int credits, String description) {
         this.gradeId = gradeId;
-        this.courseId = courseId;
         this.studentId = studentId;
-        this.credits = credits;
+        this.courseId = courseId;
         this.date = date;
+        this.credits = credits;
+        this.description = description;
     }
 
     public int getGradeId() {
@@ -44,11 +46,11 @@ public class GradeImpl implements Grade {
         this.studentId = studentId;
     }
 
-    public float getCredits() {
+    public int getCredits() {
         return credits;
     }
 
-    public void setCredits(float credits) {
+    public void setCredits(int credits) {
         this.credits = credits;
     }
 
@@ -58,6 +60,14 @@ public class GradeImpl implements Grade {
 
     public void setDate(Date date) {
         this.date = (Date)date.clone();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -74,7 +84,7 @@ public class GradeImpl implements Grade {
         if (getClass() != obj.getClass())
             return false;
         GradeImpl other = (GradeImpl) obj;
-        return !(gradeId != other.gradeId || courseId != other.courseId || studentId != other.studentId || credits != other.credits || !date.equals(other.date));
+        return !(gradeId != other.gradeId || courseId != other.courseId || studentId != other.studentId || credits != other.credits || !date.equals(other.date) || !description.equals(other.description));
     }
 
     @Override
@@ -91,6 +101,6 @@ public class GradeImpl implements Grade {
 
     @Override
     public String toString() {
-        return "Grade id = " + gradeId + ", course id = " + courseId + ", student id = " + studentId + ", credits = " + credits + ", date = " + date + ".";
+        return "Grade id = " + gradeId + ", course id = " + courseId + ", student id = " + studentId + ", credits = " + credits + ", date = " + date+ ", description = " + description + ".";
     }
 }

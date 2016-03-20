@@ -180,6 +180,26 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
+    public void addGrade(Grade grade) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("INSERT INTO GRADES(GRADE_ID, STUDENT_ID, COURSE_ID, DATE_OF_EVALUATION, CREDITS, DESCRIPTION) VALUES (NULL, ?, ?, ?, ?, ?)");
+            statement.setInt(1, grade.getStudentId());
+            statement.setInt(2, grade.getCourseId());
+            statement.setDate(3, grade.getDate());
+            statement.setInt(4, grade.getCredits());
+            statement.setString(5, grade.getDescription());
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't insert new data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+    }
+
     public void addLocation(Location location) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
@@ -238,6 +258,22 @@ public class OracleDataAccess implements ModelDataAccess {
         try {
             statement = connection.prepareStatement("DELETE FROM COURSES WHERE COURSE_ID = ?");
             statement.setInt(1, courseId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't delete data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+    }
+
+    public void removeGrade(int gradeId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("DELETE FROM GRADES WHERE GRADE_ID = ?");
+            statement.setInt(1, gradeId);
             statement.execute();
         } catch (SQLException e) {
             throw new DataAccessException("Can't delete data", e);
@@ -308,6 +344,27 @@ public class OracleDataAccess implements ModelDataAccess {
         }
     }
 
+    public void updateGrade(Grade grade) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("UPDATE GRADES SET STUDENT_ID = ?, COURSE_ID = ?, DATE_OF_EVALUATION = ?, CREDITS = ?, DESCRIPTION =? WHERE GRADE_ID = ?");
+            statement.setInt(1, grade.getStudentId());
+            statement.setInt(2, grade.getCourseId());
+            statement.setDate(3, grade.getDate());
+            statement.setInt(4, grade.getCredits());
+            statement.setString(5, grade.getDescription());
+            statement.setInt(6, grade.getGradeId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException ("Can't update data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+    }
+
     public Student getStudentById(int studentId) throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
@@ -368,6 +425,26 @@ public class OracleDataAccess implements ModelDataAccess {
         return location;
     }
 
+    public Grade getGradeById(int gradeId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        Grade grade = null;
+        try {
+            statement = connection.prepareStatement("SELECT * FROM GRADES WHERE GRADE_ID = ?");
+            statement.setInt(1, gradeId);
+            result = statement.executeQuery();
+            if(result.next())
+                grade = parseGrade(result);
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return grade;
+    }
+
     public Location parseLocation(ResultSet result) throws DataAccessException {
         Location location;
         try {
@@ -409,9 +486,10 @@ public class OracleDataAccess implements ModelDataAccess {
             System.out.println(course_id);
             Date date = result.getDate("DATE_OF_EVALUATION");
             System.out.println(date);
-            float credits = result.getFloat("CREDITS");
+            int credits = result.getInt("CREDITS");
             System.out.println(credits);
-            grade = new GradeImpl(id, student_id, course_id, date, credits);
+            String description = result.getString("DESCRIPTION");
+            grade = new GradeImpl(id, student_id, course_id, date, credits, description);
         } catch (SQLException e) {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
@@ -523,5 +601,39 @@ public class OracleDataAccess implements ModelDataAccess {
             disconnect(connection, result, statement);
         }
         return lMap;
+    }
+
+    public void enrollStudent(int studentId, int courseId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("INSERT INTO ENROLLMENT (STUDENT_ID, COURSE_ID, FINALGRADE) VALUES (?, ?, NULL)");
+            statement.setInt(1, studentId);
+            statement.setInt(2, courseId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't insert new data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+    }
+
+    public void removeEnrollment(int studentId, int courseId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("DELETE FROM ENROLLMENT WHERE STUDENT_ID = ? AND COURSE_ID = ?");
+            statement.setInt(1, studentId);
+            statement.setInt(2, courseId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DataAccessException("Can't delete data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
     }
 }

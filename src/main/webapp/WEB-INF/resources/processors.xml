@@ -46,6 +46,15 @@
         <processorName>ua.berest.lab3.controller.processors.ProcessorDeleteCourse</processorName>
     </processor>
     <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorAddGrade</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorEditGrade</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorDeleteGrade</processorName>
+    </processor>
+    <processor>
         <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormAddStudent</processorName>
     </processor>
     <processor>
@@ -64,6 +73,21 @@
         <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormEditCourse</processorName>
     </processor>
     <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormAddGrade</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormEditGrade</processorName>
+    </processor>
+    <processor>
         <processorName>ua.berest.lab3.controller.processors.ProcessorShowStudentCourses</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorShowFormEnrollStudent</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorEnrollStudent</processorName>
+    </processor>
+    <processor>
+        <processorName>ua.berest.lab3.controller.processors.ProcessorUnenrollStudent</processorName>
     </processor>
 </processors>

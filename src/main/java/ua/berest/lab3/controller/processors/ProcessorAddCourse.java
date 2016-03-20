@@ -14,7 +14,7 @@ public class ProcessorAddCourse extends Processor {
         actionToPerform = "addCourse";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-        //Integer id = Integer.valueOf(request.getParameter("idName"));
+
         Integer location_id = Integer.valueOf(request.getParameter("location_id"));
         String lastName = request.getParameter("courseName");
         String description = request.getParameter("courseDescription");

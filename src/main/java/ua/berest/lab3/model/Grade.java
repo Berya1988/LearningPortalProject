@@ -1,6 +1,6 @@
 package ua.berest.lab3.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Created by Oleg on 26.01.2016.
@@ -12,8 +12,10 @@ public interface Grade {
     void setCourseId(int courseId);
     int getStudentId();
     void setStudentId(int studentId);
-    float getCredits();
-    void setCredits(float credits);
+    int getCredits();
+    void setCredits(int credits);
     Date getDate();
     void setDate(Date date);
+    String getDescription();
+    void setDescription(String description);
 }
