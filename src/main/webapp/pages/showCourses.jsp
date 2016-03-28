@@ -41,7 +41,7 @@
     <% List<Course> listOfCourses = (List<Course>) request.getSession().getAttribute("listOfCourses"); %>
     <p>
             <% for (int i = 0; i < listOfCourses.size(); i++) { %>
-                <input type="checkbox" name ="courses"  value="<%= listOfCourses.get(i).getCourseId() %>"><a href="<%= "DispatcherServlet?action=showAllStudentsInCourse&courseId=" + listOfCourses.get(i).getCourseId() + "&locationId=" + parentLocation.getLocationId()%>"><%= listOfCourses.get(i).getName()%></a><br/>
+                <input type="checkbox" name ="courses"  value="<%= listOfCourses.get(i).getCourseId() %>"><img src="images/course_icon.jpg" width="20" height="20" alt="course"><a href="<%= "DispatcherServlet?action=showAllStudentsInCourse&courseId=" + listOfCourses.get(i).getCourseId() + "&locationId=" + parentLocation.getLocationId()%>"><%= listOfCourses.get(i).getName()%></a><br/>
             <% } %>
     </p>
 </form>

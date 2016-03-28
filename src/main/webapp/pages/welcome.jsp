@@ -35,7 +35,7 @@
             <div class="login_div">
                 <p class="title">Для користуванням порталом Вам необхідно ввести свої дані:</p>
                 <form class="login_form" name="username" action="DispatcherServlet?action=mainPage" method="POST" onSubmit="return validateForm()">
-                    Ім'я: <input type="text" name="username" value="" size="20" />
+                    Ім'я: <input type="text" name="username" value="" size="20" placeholder="Type your name"/>
                     <input type="submit" value="Ввійти" />
                 </form>
 

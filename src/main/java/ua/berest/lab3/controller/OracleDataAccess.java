@@ -108,6 +108,7 @@ public class OracleDataAccess implements ModelDataAccess {
             while(result.next()){
                 int id = result.getInt("LOCATION_ID");
                 String name = result.getString("NAME");
+                System.out.println("id = " + id + ", name  = " + name);
                 lMap.put(id, name);
             }
         } catch (Exception e) {
@@ -205,11 +206,18 @@ public class OracleDataAccess implements ModelDataAccess {
         ResultSet result = null;
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("INSERT INTO LOCATIONS(LOCATION_ID, NAME, PARENT_ID, IS_LAST_LEVEL, DESCRIPTION) VALUES (NULL, ?, ?, ?, ?)");
+            if (location.getParentId() == 0) {
+                statement = connection.prepareStatement("INSERT INTO LOCATIONS(LOCATION_ID, NAME, PARENT_ID, IS_LAST_LEVEL, DESCRIPTION) VALUES (NULL, ?, NULL, ?, ?)");
+                statement.setString(2, location.getCourse());
+                statement.setString(3, location.getDescription());
+            } else {
+                statement = connection.prepareStatement("INSERT INTO LOCATIONS(LOCATION_ID, NAME, PARENT_ID, IS_LAST_LEVEL, DESCRIPTION) VALUES (NULL, ?, ?, ?, ?)");
+                statement.setInt(2, location.getParentId());
+                statement.setString(3, location.getCourse());
+                statement.setString(4, location.getDescription());
+            }
             statement.setString(1, location.getName());
-            statement.setInt(2, location.getParentId());
-            statement.setString(3, location.getCourse());
-            statement.setString(4, location.getDescription());
+
             statement.execute();
         } catch (SQLException e) {
             throw new DataAccessException("Can't insert new data", e);
@@ -309,12 +317,20 @@ public class OracleDataAccess implements ModelDataAccess {
         ResultSet result = null;
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("UPDATE LOCATIONS SET NAME = ?, PARENT_ID = ?, IS_LAST_LEVEL = ?, DESCRIPTION = ? WHERE LOCATION_ID = ?");
+            if(location.getParentId() == 0) {
+                statement = connection.prepareStatement("UPDATE LOCATIONS SET NAME = ?, PARENT_ID = NULL, IS_LAST_LEVEL = ?, DESCRIPTION = ? WHERE LOCATION_ID = ?");
+                statement.setString(2, location.getCourse());
+                statement.setString(3, location.getDescription());
+                statement.setInt(4, location.getLocationId());
+            } else {
+                statement = connection.prepareStatement("UPDATE LOCATIONS SET NAME = ?, PARENT_ID = ?, IS_LAST_LEVEL = ?, DESCRIPTION = ? WHERE LOCATION_ID = ?");
+                statement.setInt(2, location.getParentId());
+                statement.setString(3, location.getCourse());
+                statement.setString(4, location.getDescription());
+                statement.setInt(5, location.getLocationId());
+            }
             statement.setString(1, location.getName());
-            statement.setInt(2, location.getParentId());
-            statement.setString(3, location.getCourse());
-            statement.setString(4, location.getDescription());
-            statement.setInt(5, location.getLocationId());
+
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException ("Can't update data", e);
@@ -544,8 +560,13 @@ public class OracleDataAccess implements ModelDataAccess {
         PreparedStatement statement = null;
         List<Course> lCourses = new ArrayList<Course>();
         try {
-            statement = connection.prepareStatement("SELECT * FROM COURSES WHERE LOCATION_ID = ?");
-            statement.setInt(1, locationId);
+            if(locationId == 0){
+                statement = connection.prepareStatement("SELECT * FROM COURSES WHERE LOCATION_ID IS NULL");
+            }
+            else{
+                statement = connection.prepareStatement("SELECT * FROM COURSES WHERE LOCATION_ID = ?");
+                statement.setInt(1, locationId);
+            }
             result = statement.executeQuery();
             while(result.next()){
                 lCourses.add(parseCourse(result));
@@ -565,8 +586,13 @@ public class OracleDataAccess implements ModelDataAccess {
         PreparedStatement statement = null;
         List<Location> lLocations = new ArrayList<Location>();
         try {
-            statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = ? ORDER BY NAME");
-            statement.setInt(1, locationId);
+            if(locationId == 0) {
+                statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID IS NULL ORDER BY NAME");
+            }
+            else {
+                statement = connection.prepareStatement("SELECT * FROM LOCATIONS WHERE PARENT_ID = ? ORDER BY NAME");
+                statement.setInt(1, locationId);
+            }
             result = statement.executeQuery();
             while(result.next()){
                 lLocations.add(parseLocation(result));
@@ -635,5 +661,47 @@ public class OracleDataAccess implements ModelDataAccess {
         finally {
             disconnect(connection, result, statement);
         }
+    }
+
+    public int getTotalCountOfStudents() throws DataAccessException{
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        int number = 0;
+        try {
+            statement = connection.prepareStatement("SELECT count(STUDENT_FIO) AS COUNT  FROM STUDENTS");
+            result = statement.executeQuery();
+            result.next();
+            number = result.getInt("COUNT");
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return number;
+    }
+    public List<Student> getAllStudentsByPage(int page, int range) throws DataAccessException{
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Student> lStudent = new ArrayList<Student>();
+        try {
+            statement = connection.prepareStatement("SELECT * FROM ( SELECT p.*, ROWNUM rn FROM (SELECT STUDENTS.* FROM STUDENTS ORDER BY STUDENT_FIO)p WHERE ROWNUM < 10000)WHERE rn BETWEEN ? AND ?");
+            statement.setInt(1, ((page - 1) * range + 1));
+            statement.setInt(2, (page * range));
+            System.out.println("From " + ((page - 1) * range + 1) + " to " + (page * range));
+            result = statement.executeQuery();
+            while(result.next()){
+                lStudent.add(parseStudent(result));
+
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lStudent;
     }
 }

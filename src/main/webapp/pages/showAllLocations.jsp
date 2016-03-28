@@ -21,14 +21,16 @@
     <table border="1" width="100%" cellpadding="5" bgcolor="#ffcc00">
         <tr>
             <th id="col1" >
+                <% int parent = 0; %>
                 <% for (Map.Entry<Integer, String> entry : mapOfAllLocations.entrySet()) { %>
                     <a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + entry.getKey() %>"><%= entry.getValue() %></a> :
+                    <% parent = entry.getKey(); %>
                 <% } %>
             </th>
             <th id="col2">
                 <div style="float:right">
-                    <button type="submit" formaction="DispatcherServlet?action=showFormAddLocation" >NEW</button>
-                    <button type="submit" formaction="DispatcherServlet?action=showFormEditLocation" onclick="return validateForm3()">EDIT</button>
+                    <button type="submit" formaction="<%= "DispatcherServlet?action=showFormAddLocation&parentId=" + parent %>" >NEW</button>
+                    <button type="submit" formaction="<%= "DispatcherServlet?action=showFormEditLocation&parentId=" + parent %>" onclick="return validateForm3()">EDIT</button>
                     <button type="submit" formaction="DispatcherServlet?action=deleteLocation" onclick="return validateForm3()">DELETE</button>
                 </div>
             </th>
@@ -38,7 +40,7 @@
     <% List<Location> listOfAllLocations = (List<Location>) request.getSession().getAttribute("listOfAllLocations"); %>
     <p>
         <% for (int i = 0; i < listOfAllLocations.size(); i++) { %>
-                <input type="checkbox" name ="locations"  value="<%= listOfAllLocations.get(i).getLocationId() %>"><a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + listOfAllLocations.get(i).getLocationId() %>"><%= listOfAllLocations.get(i).getName()%></a><br/>
+                <input type="checkbox" name ="locations"  value="<%= listOfAllLocations.get(i).getLocationId() %>"><img src="images/location_icon.png" width="20" height="20" alt="location"><a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + listOfAllLocations.get(i).getLocationId() %>"><%= listOfAllLocations.get(i).getName()%></a><br/>
         <% } %>
     </p>
 </form>

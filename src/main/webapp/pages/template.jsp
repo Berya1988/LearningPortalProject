@@ -40,7 +40,7 @@
             </div>
 
             <aside class="left-sidebar">
-                    <a href = "DispatcherServlet?action=showAllStudents"><p class="button">Студенти</p></a>
+                <a href = "DispatcherServlet?action=showAllStudents&page=1"><p class="button">Студенти</p></a>
                 <a href = "DispatcherServlet?action=showAllLocations&parentId=0"><p class="button">Країни</p></a>
             </aside>
 

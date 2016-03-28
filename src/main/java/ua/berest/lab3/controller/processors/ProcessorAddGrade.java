@@ -23,7 +23,9 @@ public class ProcessorAddGrade extends Processor {
         Date date = new Date(System.currentTimeMillis());
         String description = request.getParameter("descriptionName");
 
-        Grade grade = new GradeImpl(1, courseId, studentId, date, currentGrade, description);
+        System.out.println(courseId);
+        System.out.println(studentId);
+        Grade grade = new GradeImpl(1, studentId, courseId, date, currentGrade, description);
         OracleDataAccess.getInstance().addGrade(grade);
         return new ProcessorResult(("?action=showAllGrades&courseId=" + courseId + "&studentId=" + studentId), "showAllGrades.jsp", false);
     }

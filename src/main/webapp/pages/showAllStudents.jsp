@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="ua.berest.lab3.model.Student" %>
 <%@ page import="java.util.List" %>
+<%@ page import="ua.berest.lab3.controller.PaginationController" %>
 <%@ page errorPage="errorPage.jsp"%>
 
 <script>
@@ -31,7 +32,12 @@
     <% List<Student> listOfAllStudents = (List<Student>) request.getSession().getAttribute("listOfAllStudents"); %>
     <p>
             <% for (int i = 0; i < listOfAllStudents.size(); i++) { %>
-             <input type="checkbox" name ="students"  value="<%= listOfAllStudents.get(i).getStudentId() %>"><a href="<%= "DispatcherServlet?action=showStudentCourses&studentId=" + listOfAllStudents.get(i).getStudentId() %>"><%= listOfAllStudents.get(i).getFio()%></a><br/>
+             <input type="checkbox" name ="students"  value="<%= listOfAllStudents.get(i).getStudentId() %>"><img src="images/student_icon.jpg" width="20" height="20" alt="student"><a href="<%= "DispatcherServlet?action=showStudentCourses&studentId=" + listOfAllStudents.get(i).getStudentId() %>"><%= listOfAllStudents.get(i).getFio()%></a><br/>
             <% } %>
+    </p>
+    <p>
+
+        <% PaginationController paginationController = (PaginationController) request.getSession().getAttribute("paginationController"); %>
+        <%= paginationController.makePagingLinks("DispatcherServlet?action=showAllStudents", "")%>
     </p>
 </form>

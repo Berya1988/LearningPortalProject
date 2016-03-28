@@ -20,7 +20,7 @@
         <div>
             <label for="descriptionName" >Опис:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="descriptionName"  value="<%= grade!=null?grade.getDescription():""%>" id="descriptionName" placeholder="Введіть опис роботи: тест №1" />
+                <input type="text" class="form-control" name="descriptionName"  value="<%= grade!=null?grade.getDescription():""%>" id="descriptionName" placeholder="Введіть опис роботи: тест №1" required/>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
         </div>
 
         <div>
-            <button class="btn btn-default" type="submit" formaction="<%="DispatcherServlet?action=showAllGrades&courseId="+ course.getCourseId() + "&studentId=" + student.getStudentId()%>">Відміна</button>
+            <button class="btn btn-default" type="submit" formaction="<%= "DispatcherServlet?action=showAllGrades&courseId="+ course.getCourseId() + "&studentId=" + student.getStudentId() %>">Відміна</button>
             <button class="btn btn-primary" type="submit">Підтвердити</button>
         </div>
     </fieldset>

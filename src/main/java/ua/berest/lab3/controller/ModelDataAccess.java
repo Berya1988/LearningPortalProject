@@ -40,4 +40,6 @@ public interface ModelDataAccess {
     Map<Integer,String> getLocationHierarchy(int locationId) throws DataAccessException;
     Map<Integer,String> getAllLocations() throws DataAccessException;
 
+    int getTotalCountOfStudents() throws DataAccessException;
+    List<Student> getAllStudentsByPage(int startIndex, int range) throws DataAccessException;
 }

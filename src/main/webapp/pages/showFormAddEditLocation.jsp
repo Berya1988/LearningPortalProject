@@ -8,42 +8,40 @@
 <% Location location = (Location) request.getSession().getAttribute("location"); %>
 <% Map<Integer,String> mapOfAllLocations = (Map<Integer,String>) request.getSession().getAttribute("mapOfAllLocations"); %>
 
-<form id="myForm" method="POST" action="<%= location!=null?"DispatcherServlet?action=editLocation":"DispatcherServlet?action=addLocation"%>">
+<form name="location" method="POST" action="<%= location!=null?"DispatcherServlet?action=editLocation":"DispatcherServlet?action=addLocation"%>" >
     <fieldset>
         <legend><b><%= location!=null?"РОЗМІЩЕННЯ:РЕДАГУВАТИ":"РОЗМІЩЕННЯ:СТВОРИТИ"%></b></legend>
         <input type="hidden" name="idName" value="<%= location!=null?location.getLocationId():""%>" />
         <div>
             <label for="locationNameInput" >Назва:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="locationName" id="locationNameInput" value="<%= location!=null?location.getName():""%>" placeholder="Введіть назву: Харківський політехнічний інститут" />
+                <input type="text" class="form-control" name="locationName" id="locationNameInput" value="<%= location!=null?location.getName():""%>" placeholder="Введіть назву: Харківський політехнічний інститут" required/>
             </div>
         </div>
 
         <div>
             <label for="descriptionName" >Опис:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="descriptionName"  value="<%= location!=null?location.getDescription():""%>" id="descriptionName" placeholder="Введіть опис: найкращий ВУЗ в Харкові" />
+                <input type="text" class="form-control" name="descriptionName"  value="<%= location!=null?location.getDescription():""%>" id="descriptionName" placeholder="Введіть опис: найкращий ВУЗ в Харкові" required/>
             </div>
         </div>
 
+
         <div>
             <div class="col-lg-9">
-                <label for="isCourse" >Чи є підрівні?:</label>
-                <select name="isCourse" id="isCourse">
-                    <option selected disabled>Виберіть один із варіантів</option>
+                <label>Останній рівень:</label>
                     <% if(location == null) { %>
-                        <option value="true">true</option>
-                        <option value="false">false</option>
+                        <input type="radio" name="course" value="true">Так
+                        <input type="radio" name="course" value="false" checked>Ні</br>
                     <% } else {%>
                         <% if(location.getCourse().equals("true")) { %>
-                            <option selected value="true">true</option>
-                            <option value="false">false</option>
+                            <input type="radio" name="course" value="true" checked disabled>Так
+                            <input type="radio" name="course" value="false" disabled>Ні</br>
                         <% } else { %>
-                            <option value="true">true</option>
-                            <option selected value="false">false</option>
+                            <input type="radio" name="course" value="true">Так
+                            <input type="radio" name="course" value="false" checked>Ні</br>
                         <% }
                     } %>
-                </select>
             </div>
         </div>
 
@@ -51,11 +49,11 @@
             <div class="col-lg-9">
                 <label for="parent" >Виберіть батьківський елемент:</label>
                 <select name="parent" id="parent">
-                    <option selected disabled>Виберіть один із варіантів</option>
+                    <% int parentElement = Integer.parseInt((String)request.getSession().getAttribute("parentId")); %>
                     <% for (Map.Entry<Integer, String> entry : mapOfAllLocations.entrySet()) { %>
-                        <% if(location != null && location.getParentId() == entry.getKey()) { %>
+                        <% if(parentElement == entry.getKey()) { %>
                             <option selected value="<%= entry.getKey()%>"><%= entry.getValue()%></option>
-                        <% } else {%>
+                        <% } else { %>
                             <option value="<%= entry.getKey()%>"><%= entry.getValue()%></option>
                         <% } %>
                     <% } %>
@@ -64,7 +62,7 @@
         </div>
 
         <div>
-            <button class="btn btn-default" type="submit" formaction="DispatcherServlet?action=showAllLocations&parentId=0">Відміна</button>
+            <button class="btn btn-default" type="submit" formaction="<%= "DispatcherServlet?action=showAllLocations&parentId=" + parentElement%>">Відміна</button>
             <button class="btn btn-primary" type="submit">Підтвердити</button>
         </div>
     </fieldset>

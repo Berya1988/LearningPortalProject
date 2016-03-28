@@ -17,6 +17,7 @@ public class ProcessorShowFormEditLocation extends Processor {
         actionToPerform = "showFormEditLocation";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
+        request.getSession().setAttribute("parentId", request.getParameter("parentId"));
         String[] locations = request.getParameterValues("locations");
         Location location = OracleDataAccess.getInstance().getLocationById(Integer.parseInt(locations[0]));
         request.getSession().setAttribute("location", location);
