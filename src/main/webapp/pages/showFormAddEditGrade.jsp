@@ -40,7 +40,7 @@
         </div>
 
         <div>
-            <button class="btn btn-default" type="submit" formaction="<%= "DispatcherServlet?action=showAllGrades&courseId="+ course.getCourseId() + "&studentId=" + student.getStudentId() %>">Відміна</button>
+            <button class="btn btn-default"><a href="<%= "DispatcherServlet?action=showAllGrades&courseId="+ course.getCourseId() + "&studentId=" + student.getStudentId() %>">Відміна</a></button>
             <button class="btn btn-primary" type="submit">Підтвердити</button>
         </div>
     </fieldset>

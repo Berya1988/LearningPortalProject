@@ -1,5 +1,6 @@
 package ua.berest.lab3.controller.processors;
 
+import org.apache.log4j.Logger;
 import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
 import ua.berest.lab3.model.ProcessorResult;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by Oleg on 02.03.2016.
  */
 public class ProcessorAddStudent extends Processor {
+    static final Logger logger = Logger.getLogger(ProcessorAddStudent.class);
     public ProcessorAddStudent() {
         actionToPerform = "addStudent";
     }
@@ -22,11 +24,7 @@ public class ProcessorAddStudent extends Processor {
         String phone = request.getParameter("phoneName");
         String address = request.getParameter("addressName");
         Student student = new StudentImpl(1, lastName, group, mail, phone, address);
-        System.out.println("FIO: " + student.getFio());
-        System.out.println("Group: " + student.getGroup());
-        System.out.println("Mail: " + student.getMail());
-        System.out.println("Phone: " + student.getPhone());
-        System.out.println("Address: " + student.getAddress());
+        logger.info("FIO: " + student.getFio() + "Group: " + student.getGroup() + "Mail: " + student.getMail() + "Phone: " + student.getPhone() + "Address: " + student.getAddress());
         OracleDataAccess.getInstance().addStudent(student);
         return new ProcessorResult("?action=showAllStudents", "showAllStudents.jsp", false);
     }

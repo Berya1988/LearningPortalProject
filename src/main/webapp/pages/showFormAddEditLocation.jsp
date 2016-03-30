@@ -34,7 +34,7 @@
                         <input type="radio" name="course" value="true">Так
                         <input type="radio" name="course" value="false" checked>Ні</br>
                     <% } else {%>
-                        <% if(location.getCourse().equals("true")) { %>
+                        <% if(location.getCourse() == true) { %>
                             <input type="radio" name="course" value="true" checked disabled>Так
                             <input type="radio" name="course" value="false" disabled>Ні</br>
                         <% } else { %>
@@ -62,7 +62,7 @@
         </div>
 
         <div>
-            <button class="btn btn-default" type="submit" formaction="<%= "DispatcherServlet?action=showAllLocations&parentId=" + parentElement%>">Відміна</button>
+            <button class="btn btn-default"><a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + parentElement%>">Відміна</a></button>
             <button class="btn btn-primary" type="submit">Підтвердити</button>
         </div>
     </fieldset>

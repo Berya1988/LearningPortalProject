@@ -14,8 +14,8 @@ public class ProcessorDeleteGrade extends Processor {
         actionToPerform = "deleteGrade";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-        Integer courseId = Integer.valueOf(request.getParameter("courseId"));
-        Integer studentId = Integer.valueOf(request.getParameter("studentId"));
+        int courseId = Integer.valueOf(request.getParameter("courseId"));
+        int studentId = Integer.valueOf(request.getParameter("studentId"));
         String[] grades = request.getParameterValues("grades");
         if (grades != null) {
             for (int i = 0; i < grades.length; i++)

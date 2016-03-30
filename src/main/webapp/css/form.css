@@ -114,6 +114,11 @@ fieldset[disabled] .btn {
     border-color: #cccccc;
 }
 
+.btn-default a {
+    color: white;
+    text-decoration: none;
+}
+
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,

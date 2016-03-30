@@ -73,7 +73,7 @@ public class CourseImpl implements Course {
         if (getClass() != obj.getClass())
             return false;
         CourseImpl other = (CourseImpl) obj;
-        return !(locationId != other.locationId || courseId != other.courseId || name != other.name || !description.equals(description) || !teacher.equals(other.teacher));
+        return !(locationId != other.locationId || courseId != other.courseId || name != other.name || !description.equals(other.description) || !teacher.equals(other.teacher));
     }
 
     @Override

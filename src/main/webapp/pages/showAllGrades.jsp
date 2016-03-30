@@ -7,11 +7,16 @@
 
 <script>
     function validateForm5() {
-        for (var i = 0; i < document.gradeForm.grades.length; i++) {
-            if (document.gradeForm.grades[i].checked) {
+        var len = document.gradeForm.grades.length;
+        if(len == undefined && document.getElementById("grades0") != null){
+            len = 1;
+        }
+        for (var i = 0; i < len; i++) {
+            if (document.getElementById("grades" + i).checked == true) {
                 return true;
             }
         }
+
         alert("You should choose at least one item!");
         return false;
     }
@@ -22,7 +27,7 @@
 <form method="POST" name="gradeForm">
     <table border="1" width="100%" cellpadding="5" bgcolor="#ffcc00">
         <tr>
-            <th id="col1" ><a href="DispatcherServlet?action=showAllStudents">Студенти</a> : <%= student.getFio()%>, <a href="<%= "DispatcherServlet?action=showStudentCourses&studentId=" + student.getStudentId() %>">курси</a> : <%= course.getName()%></th>
+            <th id="col1" ><a href="DispatcherServlet?action=showAllStudents&page=1">Студенти</a> : <%= student.getFio()%>, <a href="<%= "DispatcherServlet?action=showStudentCourses&studentId=" + student.getStudentId() %>">курси</a> : <%= course.getName()%></th>
             <th id="col2">
                 <div style="float:right">
                     <button type="submit" formaction="<%= "DispatcherServlet?action=showFormAddGrade&courseId=" + course.getCourseId() + "&studentId=" + student.getStudentId()%>">NEW</button>
@@ -40,7 +45,7 @@
             <% for (int i = 0; i < listOfAllGrades.size(); i++) { %>
                 <% sum += listOfAllGrades.get(i).getCredits(); %>
                 <tr>
-                    <th><input type="checkbox" name ="grades"  value="<%= listOfAllGrades.get(i).getGradeId() %>"></th>
+                    <th><input type="checkbox" name ="grades" id="<%= "grades" + i %>"  value="<%= listOfAllGrades.get(i).getGradeId() %>"></th>
                     <th><%= listOfAllGrades.get(i).getCredits()%></th>
                     <th><%= listOfAllGrades.get(i).getDate()%></th>
                     <th><%= listOfAllGrades.get(i).getDescription()%></th>

@@ -16,15 +16,14 @@ public class ProcessorAddGrade extends Processor {
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
 
-        Integer courseId = Integer.valueOf(request.getParameter("courseId"));
-        Integer studentId = Integer.valueOf(request.getParameter("studentId"));
-        Integer currentGrade = Integer.valueOf(request.getParameter("currentGrade"));
+        int courseId = Integer.valueOf(request.getParameter("courseId"));
+        int studentId = Integer.valueOf(request.getParameter("studentId"));
+        int currentGrade = Integer.valueOf(request.getParameter("currentGrade"));
 
         Date date = new Date(System.currentTimeMillis());
         String description = request.getParameter("descriptionName");
 
-        System.out.println(courseId);
-        System.out.println(studentId);
+
         Grade grade = new GradeImpl(1, studentId, courseId, date, currentGrade, description);
         OracleDataAccess.getInstance().addGrade(grade);
         return new ProcessorResult(("?action=showAllGrades&courseId=" + courseId + "&studentId=" + studentId), "showAllGrades.jsp", false);

@@ -4,17 +4,6 @@
 
 <link href="css/form.css" rel="stylesheet" type="text/css">
 
-<script type="text/javascript">
-    function validateForm()
-    {
-        if (document.myForm.userName.value == 0)
-        {
-            alert("Name is necessary!");
-            return false;
-        }
-        return true;
-    }
-</script>
 
 <% Student student = (Student) request.getSession().getAttribute("student"); %>
 
@@ -57,8 +46,8 @@
             </div>
         </div>
         <div>
-            <button class="btn btn-default" type="submit" formaction="DispatcherServlet?action=showAllStudents&page=1">Відміна</button>
-            <button class="btn btn-primary" type="submit" onclick="return validateForm()">Підтвердити</button>
+            <button class="btn btn-default" ><a href = "DispatcherServlet?action=showAllStudents&page=1">Відміна</a></button>
+            <button class="btn btn-primary" type="submit" >Підтвердити</button>
         </div>
     </fieldset>
 </form>

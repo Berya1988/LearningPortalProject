@@ -15,10 +15,10 @@ public class ProcessorEditGrade extends Processor {
         actionToPerform = "editGrade";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-        Integer id = Integer.valueOf(request.getParameter("idName"));
-        Integer courseId = Integer.valueOf(request.getParameter("courseId"));
-        Integer studentId = Integer.valueOf(request.getParameter("studentId"));
-        Integer currentGrade = Integer.valueOf(request.getParameter("currentGrade"));
+        int id = Integer.valueOf(request.getParameter("idName"));
+        int courseId = Integer.valueOf(request.getParameter("courseId"));
+        int studentId = Integer.valueOf(request.getParameter("studentId"));
+        int currentGrade = Integer.valueOf(request.getParameter("currentGrade"));
         Date date = new Date(System.currentTimeMillis());
         String description = request.getParameter("descriptionName");
 

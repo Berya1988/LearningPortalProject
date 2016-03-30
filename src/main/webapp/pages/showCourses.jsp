@@ -7,8 +7,12 @@
 
 <script>
     function validateForm4() {
-        for (var i = 0; i < document.locationForm.courses.length; i++) {
-            if (document.locationForm.courses[i].checked) {
+        var len = document.locationForm.courses.length;
+        if(len == undefined && document.getElementById("courses0") != null){
+            len = 1;
+        }
+        for (var i = 0; i < len; i++) {
+            if (document.getElementById("courses" + i).checked == true) {
                 return true;
             }
         }
@@ -41,7 +45,7 @@
     <% List<Course> listOfCourses = (List<Course>) request.getSession().getAttribute("listOfCourses"); %>
     <p>
             <% for (int i = 0; i < listOfCourses.size(); i++) { %>
-                <input type="checkbox" name ="courses"  value="<%= listOfCourses.get(i).getCourseId() %>"><img src="images/course_icon.jpg" width="20" height="20" alt="course"><a href="<%= "DispatcherServlet?action=showAllStudentsInCourse&courseId=" + listOfCourses.get(i).getCourseId() + "&locationId=" + parentLocation.getLocationId()%>"><%= listOfCourses.get(i).getName()%></a><br/>
+                <input type="checkbox" name ="courses"  id="<%= "courses" + i %>" value="<%= listOfCourses.get(i).getCourseId() %>"><img src="images/course_icon.jpg" width="20" height="20" alt="course"><a href="<%= "DispatcherServlet?action=showAllStudentsInCourse&courseId=" + listOfCourses.get(i).getCourseId() + "&locationId=" + parentLocation.getLocationId()%>"><%= listOfCourses.get(i).getName()%></a><br/>
             <% } %>
     </p>
 </form>

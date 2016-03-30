@@ -15,6 +15,7 @@ import java.util.Map;
 public interface ModelDataAccess {
     List<Student> getAllStudents() throws DataAccessException;
     List<Student> getAllStudentsInCourse(int courseId) throws DataAccessException;
+    List<Student> getAllStudentsOutOfCourse(int courseId) throws DataAccessException;
     List<Location> getAllLocationsByParentId(int locationId) throws DataAccessException;
     List<Grade> getAllGradesByCourseAndStudent(int courseId, int studentId) throws DataAccessException;
     void addStudent(Student student) throws DataAccessException;

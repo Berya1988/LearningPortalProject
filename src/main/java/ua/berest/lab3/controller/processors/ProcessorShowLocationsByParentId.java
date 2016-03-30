@@ -22,7 +22,7 @@ public class ProcessorShowLocationsByParentId extends Processor {
         Map<Integer, String> mapOfAllLocations = OracleDataAccess.getInstance().getLocationHierarchy(parentId);
         request.getSession().setAttribute("mapOfAllLocationsById", mapOfAllLocations);
         Location location = OracleDataAccess.getInstance().getLocationById(parentId);
-        if(location != null && location.getCourse().equals("true")){
+        if(location != null && location.getCourse() == true){
             List<Course> listOfCourses = OracleDataAccess.getInstance().getCoursesByLocationId(parentId);
             request.getSession().setAttribute("listOfCourses", listOfCourses);
             request.getSession().setAttribute("parentLocation", location);

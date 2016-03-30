@@ -4,8 +4,8 @@ package ua.berest.lab3.model;
  * Created by Oleg on 26.01.2016.
  */
 public interface Student {
-    Integer getStudentId();
-    void setStudentId(Integer studentId);
+    int getStudentId();
+    void setStudentId(int studentId);
     String getFio();
     void setFio(String fio);
     String getGroup();

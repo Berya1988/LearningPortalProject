@@ -16,14 +16,13 @@ public class ProcessorEditStudent extends Processor {
         actionToPerform = "editStudent";
     }
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
-        Integer id = Integer.valueOf(request.getParameter("idName"));
+        int id = Integer.valueOf(request.getParameter("idName"));
         String lastName = request.getParameter("userName");
         String group = request.getParameter("groupName");
         String mail = request.getParameter("mailName");
         String phone = request.getParameter("phoneName");
         String address = request.getParameter("addressName");
         Student student = new StudentImpl(id, lastName, group, mail, phone, address);
-        System.out.println("FIO: " + student.getFio());
         OracleDataAccess.getInstance().updateStudent(student);
         return new ProcessorResult("?action=showAllStudents", "showAllStudents.jsp", false);
     }

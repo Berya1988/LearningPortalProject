@@ -1,5 +1,6 @@
 package ua.berest.lab3.controller;
 
+import org.apache.log4j.Logger;
 import ua.berest.lab3.exception.DataAccessException;
 import ua.berest.lab3.model.*;
 
@@ -13,6 +14,7 @@ import javax.sql.DataSource;
  * Created by Oleg on 26.01.2016.
  */
 public class OracleDataAccess implements ModelDataAccess {
+    static final Logger logger = Logger.getLogger(OracleDataAccess.class);
     private static final OracleDataAccess instance = new OracleDataAccess();
     private DataSource ds;
     private Context ctx;
@@ -25,7 +27,7 @@ public class OracleDataAccess implements ModelDataAccess {
             ctx = new InitialContext(ht);
             ds = (javax.sql.DataSource) ctx.lookup("JNDI_Name0");
         } catch (NamingException e) {
-            System.err.println (e.getMessage());
+            logger.error("Threw a NamingException in OracleDataAccess class::" + e.getMessage(), e);
         }
     }
 
@@ -97,6 +99,27 @@ public class OracleDataAccess implements ModelDataAccess {
         return lStudent;
     }
 
+    public List<Student> getAllStudentsOutOfCourse(int courseId) throws DataAccessException {
+        Connection connection = connect();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<Student> lStudent = new ArrayList<Student>();
+        try {
+            statement = connection.prepareStatement("(SELECT s.STUDENT_ID, s.STUDENT_FIO, s.STUDENT_GROUP, s.MAIL, s.PHONE_NUMBER, s.ADDRESS FROM STUDENTS s) MINUS (SELECT s.STUDENT_ID, s.STUDENT_FIO, s.STUDENT_GROUP, s.MAIL, s.PHONE_NUMBER, s.ADDRESS FROM STUDENTS s, ENROLLMENT WHERE ENROLLMENT.STUDENT_ID = s.STUDENT_ID AND ENROLLMENT.COURSE_ID = ?) ORDER BY STUDENT_FIO");
+            statement.setInt(1, courseId);
+            result = statement.executeQuery();
+            while(result.next()){
+                lStudent.add(parseStudent(result));
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Can't extract necessary data", e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return lStudent;
+    }
+
     public Map<Integer,String> getAllLocations() throws DataAccessException {
         Connection connection = connect();
         ResultSet result = null;
@@ -108,7 +131,7 @@ public class OracleDataAccess implements ModelDataAccess {
             while(result.next()){
                 int id = result.getInt("LOCATION_ID");
                 String name = result.getString("NAME");
-                System.out.println("id = " + id + ", name  = " + name);
+                logger.info("id = " + id + ", name  = " + name);
                 lMap.put(id, name);
             }
         } catch (Exception e) {
@@ -208,12 +231,12 @@ public class OracleDataAccess implements ModelDataAccess {
         try {
             if (location.getParentId() == 0) {
                 statement = connection.prepareStatement("INSERT INTO LOCATIONS(LOCATION_ID, NAME, PARENT_ID, IS_LAST_LEVEL, DESCRIPTION) VALUES (NULL, ?, NULL, ?, ?)");
-                statement.setString(2, location.getCourse());
+                statement.setString(2, String.valueOf(location.getCourse()));
                 statement.setString(3, location.getDescription());
             } else {
                 statement = connection.prepareStatement("INSERT INTO LOCATIONS(LOCATION_ID, NAME, PARENT_ID, IS_LAST_LEVEL, DESCRIPTION) VALUES (NULL, ?, ?, ?, ?)");
                 statement.setInt(2, location.getParentId());
-                statement.setString(3, location.getCourse());
+                statement.setString(3, String.valueOf(location.getCourse()));
                 statement.setString(4, location.getDescription());
             }
             statement.setString(1, location.getName());
@@ -319,13 +342,13 @@ public class OracleDataAccess implements ModelDataAccess {
         try {
             if(location.getParentId() == 0) {
                 statement = connection.prepareStatement("UPDATE LOCATIONS SET NAME = ?, PARENT_ID = NULL, IS_LAST_LEVEL = ?, DESCRIPTION = ? WHERE LOCATION_ID = ?");
-                statement.setString(2, location.getCourse());
+                statement.setString(2, String.valueOf(location.getCourse()));
                 statement.setString(3, location.getDescription());
                 statement.setInt(4, location.getLocationId());
             } else {
                 statement = connection.prepareStatement("UPDATE LOCATIONS SET NAME = ?, PARENT_ID = ?, IS_LAST_LEVEL = ?, DESCRIPTION = ? WHERE LOCATION_ID = ?");
                 statement.setInt(2, location.getParentId());
-                statement.setString(3, location.getCourse());
+                statement.setString(3, String.valueOf(location.getCourse()));
                 statement.setString(4, location.getDescription());
                 statement.setInt(5, location.getLocationId());
             }
@@ -464,12 +487,12 @@ public class OracleDataAccess implements ModelDataAccess {
     public Location parseLocation(ResultSet result) throws DataAccessException {
         Location location;
         try {
-            Integer id = result.getInt("LOCATION_ID");
+            int id = result.getInt("LOCATION_ID");
             String name = result.getString("NAME");
             int parent_id = result.getInt("PARENT_ID");
             String is_last_level = result.getString("IS_LAST_LEVEL");
             String description = result.getString("DESCRIPTION");
-            location = new LocationImpl(id, name, parent_id, is_last_level, description);
+            location = new LocationImpl(id, name, parent_id, Boolean.parseBoolean(is_last_level), description);
         } catch (SQLException e) {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
@@ -479,7 +502,7 @@ public class OracleDataAccess implements ModelDataAccess {
     public Course parseCourse(ResultSet result) throws DataAccessException {
         Course course;
         try {
-            Integer id = result.getInt("COURSE_ID");
+            int id = result.getInt("COURSE_ID");
             Integer location_id = result.getInt("LOCATION_ID");
             String name = result.getString("NAME");
             String description = result.getString("DESCRIPTION");
@@ -494,16 +517,12 @@ public class OracleDataAccess implements ModelDataAccess {
     public Grade parseGrade(ResultSet result) throws DataAccessException {
         Grade grade;
         try {
-            Integer id = result.getInt("GRADE_ID");
-            System.out.println(id);
-            Integer student_id = result.getInt("STUDENT_ID");
-            System.out.println(student_id);
-            Integer course_id = result.getInt("COURSE_ID");
-            System.out.println(course_id);
+            int id = result.getInt("GRADE_ID");
+            int student_id = result.getInt("STUDENT_ID");
+            int course_id = result.getInt("COURSE_ID");
+            logger.info("student id = " + student_id + ", course id  = " + course_id);
             Date date = result.getDate("DATE_OF_EVALUATION");
-            System.out.println(date);
             int credits = result.getInt("CREDITS");
-            System.out.println(credits);
             String description = result.getString("DESCRIPTION");
             grade = new GradeImpl(id, student_id, course_id, date, credits, description);
         } catch (SQLException e) {
@@ -515,14 +534,13 @@ public class OracleDataAccess implements ModelDataAccess {
     public Student parseStudent(ResultSet result) throws DataAccessException {
         Student student;
         try {
-            Integer id = result.getInt("STUDENT_ID");
+            int id = result.getInt("STUDENT_ID");
             String lastName = result.getString("STUDENT_FIO");
             String group = result.getString("STUDENT_GROUP");
             String mail = result.getString("MAIL");
             String phone = result.getString("PHONE_NUMBER");
             String address = result.getString("ADDRESS");
             student = new StudentImpl(id, lastName, group, mail, phone, address);
-            //System.out.println(id + " " + lastName + " " + group + " " + mail + " " + phone + " " + address);
         } catch (SQLException e) {
             throw new DataAccessException("Can't get data from ResultSet", e);
         }
@@ -690,7 +708,7 @@ public class OracleDataAccess implements ModelDataAccess {
             statement = connection.prepareStatement("SELECT * FROM ( SELECT p.*, ROWNUM rn FROM (SELECT STUDENTS.* FROM STUDENTS ORDER BY STUDENT_FIO)p WHERE ROWNUM < 10000)WHERE rn BETWEEN ? AND ?");
             statement.setInt(1, ((page - 1) * range + 1));
             statement.setInt(2, (page * range));
-            System.out.println("From " + ((page - 1) * range + 1) + " to " + (page * range));
+            logger.info("From " + ((page - 1) * range + 1) + " to " + (page * range));
             result = statement.executeQuery();
             while(result.next()){
                 lStudent.add(parseStudent(result));

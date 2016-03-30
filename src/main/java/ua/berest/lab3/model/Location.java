@@ -12,6 +12,6 @@ public interface Location {
     void setDescription(String description);
     int getParentId();
     void setParentId(int parentId);
-    String getCourse();
-    void setCourse(String course);
+    boolean getCourse();
+    void setCourse(boolean course);
 }

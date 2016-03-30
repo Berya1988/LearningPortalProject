@@ -15,26 +15,26 @@
         <div>
             <label for="courseNameInput" >Назва курсу:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="courseName" id="courseNameInput" value="<%= course!=null?course.getName():""%>" placeholder="Введіть назву курсу: Art" />
+                <input type="text" class="form-control" name="courseName" id="courseNameInput" value="<%= course!=null?course.getName():""%>" placeholder="Введіть назву курсу: Art" required/>
             </div>
         </div>
 
         <div>
             <label for="courseDescriptionInput" >Опис:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="courseDescription" id="courseDescriptionInput" value="<%= course!=null?course.getDescription():""%>" placeholder="Опишіть курс: найкращий курс" />
+                <input type="text" class="form-control" name="courseDescription" id="courseDescriptionInput" value="<%= course!=null?course.getDescription():""%>" placeholder="Опишіть курс: найкращий курс" required/>
             </div>
         </div>
 
         <div>
             <label for="teacherInput" >Викладач:</label>
             <div class="col-lg-9">
-                <input type="text" class="form-control" name="teacherName" id="teacherInput" value="<%= course!=null?course.getTeacher():""%>" placeholder="Визначити викладача: Lulev O.V." />
+                <input type="text" class="form-control" name="teacherName" id="teacherInput" value="<%= course!=null?course.getTeacher():""%>" placeholder="Визначити викладача: Lulev O.V." required/>
             </div>
         </div>
 
         <div>
-            <button class="btn btn-default" type="submit" formaction="<%="DispatcherServlet?action=showAllLocations&parentId=" + parentLocation.getLocationId() %>">Відміна</button>
+            <button class="btn btn-default"><a href = "<%="DispatcherServlet?action=showAllLocations&parentId=" + parentLocation.getLocationId() %>">Відміна</a></button>
             <button class="btn btn-primary" type="submit">Підтвердити</button>
         </div>
     </fieldset>

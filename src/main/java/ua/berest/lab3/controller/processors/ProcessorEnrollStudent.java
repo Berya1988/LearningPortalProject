@@ -19,8 +19,16 @@ public class ProcessorEnrollStudent extends Processor {
     public ProcessorResult process(HttpServletRequest request) throws DataAccessException {
         int courseId = Integer.parseInt(request.getParameter("courseId"));
         Course course = OracleDataAccess.getInstance().getCourseById(courseId);
-        Integer studentId = Integer.valueOf(request.getParameter("enrolledStudent"));
-        OracleDataAccess.getInstance().enrollStudent(studentId, courseId);
+
+        String[] students = request.getParameterValues("students");
+        if (students != null) {
+            for (int i = 0; i < students.length; i++)
+            {
+                OracleDataAccess.getInstance().enrollStudent(Integer.parseInt(students[i]), courseId);
+            }
+        }
+
+
         return new ProcessorResult(("?action=showAllStudentsInCourse&courseId=" + course.getCourseId() + "&locationId="+ course.getLocationId()), "showAllLocations.jsp", false);
     }
 }

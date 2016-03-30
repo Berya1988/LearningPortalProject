@@ -6,8 +6,12 @@
 
 <script>
     function validateForm3() {
-        for (var i = 0; i < document.locationForm.locations.length; i++) {
-            if (document.locationForm.locations[i].checked) {
+        var len = document.locationForm.locations.length;
+        if(len == undefined && document.getElementById("locations0") != null){
+            len = 1;
+        }
+        for (var i = 0; i < len; i++) {
+            if (document.getElementById("locations" + i).checked == true) {
                 return true;
             }
         }
@@ -40,7 +44,7 @@
     <% List<Location> listOfAllLocations = (List<Location>) request.getSession().getAttribute("listOfAllLocations"); %>
     <p>
         <% for (int i = 0; i < listOfAllLocations.size(); i++) { %>
-                <input type="checkbox" name ="locations"  value="<%= listOfAllLocations.get(i).getLocationId() %>"><img src="images/location_icon.png" width="20" height="20" alt="location"><a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + listOfAllLocations.get(i).getLocationId() %>"><%= listOfAllLocations.get(i).getName()%></a><br/>
+                <input type="checkbox" name="locations" id="<%= "locations" + i%>" value="<%= listOfAllLocations.get(i).getLocationId() %>"><img src="images/location_icon.png" width="20" height="20" alt="location"><a href="<%= "DispatcherServlet?action=showAllLocations&parentId=" + listOfAllLocations.get(i).getLocationId() %>"><%= listOfAllLocations.get(i).getName()%></a><br/>
         <% } %>
     </p>
 </form>

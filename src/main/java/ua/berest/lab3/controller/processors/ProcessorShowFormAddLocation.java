@@ -2,7 +2,6 @@ package ua.berest.lab3.controller.processors;
 
 import ua.berest.lab3.controller.OracleDataAccess;
 import ua.berest.lab3.exception.DataAccessException;
-import ua.berest.lab3.model.Location;
 import ua.berest.lab3.model.ProcessorResult;
 
 import javax.servlet.http.HttpServletRequest;
